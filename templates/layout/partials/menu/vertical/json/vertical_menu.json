@@ -1,0 +1,40 @@
+{
+  "menu": [
+    {
+      "url": "index",
+      "icon": "menu-icon tf-icons ti ti-smart-home",
+      "name": "Inicio",
+      "slug": "index"
+    },
+    {
+      "url": "carga-masiva",
+      "icon": "menu-icon tf-icons ti ti-app-window",
+      "name": "Carga masiva",
+      "slug": "carga-masiva"
+    },
+    {
+      "url": "facturas",
+      "icon": "menu-icon tf-icons ti ti-app-window",
+      "name": "Facturas",
+      "slug": "facturas"
+    },
+    {
+      "url": "boletas",
+      "icon": "menu-icon tf-icons ti ti-smart-home",
+      "name": "Boletas",
+      "slug": "boletas"
+    },
+    {
+      "url": "notas-credito",
+      "icon": "menu-icon tf-icons ti ti-smart-home",
+      "name": "Notas de crédito",
+      "slug": "notas-credito"
+    },
+    {
+      "url": "notas-debito",
+      "icon": "menu-icon tf-icons ti ti-smart-home",
+      "name": "Notas de débito",
+      "slug": "notas-debito"
+    }
+  ]
+}

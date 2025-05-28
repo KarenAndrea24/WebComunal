@@ -1,0 +1,77 @@
+{% extends layout_path %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Carga masiva documentos{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+  <div class="card-body">
+    <h4 class="mb-4">Carga masiva de documentos</h4>
+    <form method="post" enctype="multipart/form-data" id="carga-form">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Cabecera documento</label>
+          <input type="file" name="cabecera" class="form-control" required />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Detalle</label>
+          <input type="file" name="detalle" class="form-control" required />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Cuotas</label>
+          <input type="file" name="cuotas" class="form-control" required />
+        </div>
+      </div>
+      <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Cargar archivos</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Sección de Previsualización también en una card -->
+<div class="card">
+  <div class="card-body">
+    <h5 class="mb-3">Previsualización:</h5>
+    <ul class="nav nav-tabs" id="previewTabs" role="tablist">
+      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#preview-cabecera">Cabecera</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#preview-detalle">Detalle</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#preview-cuotas">Cuotas</a></li>
+    </ul>
+    <div class="tab-content pt-3">
+      <div class="tab-pane fade show active" id="preview-cabecera"><table id="tablaCabecera" class="table datatable"></table></div>
+      <div class="tab-pane fade" id="preview-detalle"><table id="tablaDetalle" class="table datatable"></table></div>
+      <div class="tab-pane fade" id="preview-cuotas"><table id="tablaCuotas" class="table datatable"></table></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+{{ block.super }}
+
+<!-- Incluye primero los scripts de DataTables -->
+<script src="{% static 'vendor/libs/datatables-bs5/datatables-bootstrap5.js' %}"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+<!-- Tu función renderTable -->
+<script>
+function renderTable(tableId, data) {
+  const keys = Object.keys(data[0]);
+  const table = $(`#${tableId}`);
+  const thead = keys.map(k => `<th>${k}</th>`).join("");
+  table.html(`<thead><tr>${thead}</tr></thead><tbody></tbody>`);
+  const tbody = table.find('tbody');
+  data.forEach(row => {
+    const tds = keys.map(k => `<td>${row[k]}</td>`).join("");
+    tbody.append(`<tr>${tds}</tr>`);
+  });
+  table.DataTable();
+}
+</script>
+
+
+
+{% endblock %}
