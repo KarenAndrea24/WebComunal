@@ -2,7 +2,7 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}Page 2 - Starter Kit{% endblock title %}
+{% block title %}Facturas{% endblock title %}
 
 {% block vendor_css %}
 {{ block.super }}
@@ -36,29 +36,20 @@
   <div class="card-body">
     <form method="get" class="row g-3">
       <div class="col-md-2">
-        <label class="form-label">Tipo documento</label>
-        <select name="tipo" class="form-select">
-          <option value="">Todos</option>
-          <option value="Factura">Factura</option>
-          <option value="Boleta">Boleta</option>
-          ...
-        </select>
-      </div>
-      <div class="col-md-2">
         <label class="form-label">Serie</label>
-        <input type="text" name="serie" class="form-control" />
+        <input type="text" name="serie" class="form-control" placeholder= "Ingresa la serie"/>
       </div>
       <div class="col-md-2">
         <label class="form-label">Correlativo</label>
-        <input type="text" name="correlativo" class="form-control" />
-      </div>
-      <div class="col-md-2">
-        <label class="form-label">Código cliente</label>
-        <input type="text" name="cod_cliente" class="form-control" />
+        <input type="text" name="correlativo" class="form-control" placeholder = "Ingrese el correlativo"/>
       </div>
       <div class="col-md-3">
+        <label class="form-label">Código cliente / RUC</label>
+        <input type="text" name="cod_cliente" class="form-control" placeholder = "Ingrese el código de cliente"/>
+      </div>
+      <div class="col-md-4">
         <label class="form-label">Razón social</label>
-        <input type="text" name="razon_social" class="form-control" />
+        <input type="text" name="razon_social" class="form-control" placeholder = "Ingrese la razón social"/>
       </div>
       <div class="col-md-1 d-flex align-items-end">
         <button type="submit" class="btn btn-primary w-100">Filtrar</button>
@@ -76,11 +67,20 @@
           <th></th>
           <th></th>
           <th>id</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Date</th>
-          <th>Salary</th>
-          <th>Status</th>
+          <th>Código cliente</th>
+          <th>Razón social</th>
+          <th>Moneda</th>
+          <th>Condición de pago</th>
+          <th>Fecha contabilización</th>
+          {% comment %} <th>Fecha vencimiento</th>
+          <th>Fecha documento</th>
+          <th>Tipo de documento</th>
+          <th>Serie</th>
+          <th>Correlativo</th>
+          <th>Descuento global</th>
+          <th>Total documento IGV (Calculable)</th>
+          <th>Estado migración</th>
+          <th>Mensaje migración</th> {% endcomment %}
           <th>Action</th>
         </tr>
       </thead>

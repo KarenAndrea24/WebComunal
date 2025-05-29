@@ -11,17 +11,13 @@
     <form method="post" enctype="multipart/form-data" id="carga-form">
       {% csrf_token %}
       <div class="row g-3">
-        <div class="col-md-4">
-          <label class="form-label">Cabecera documento</label>
+        <div class="col-md-6">
+          <label class="form-label">Cabecera de documento</label>
           <input type="file" name="cabecera" class="form-control" required />
         </div>
-        <div class="col-md-4">
-          <label class="form-label">Detalle</label>
+        <div class="col-md-6">
+          <label class="form-label">Detalle de documento</label>
           <input type="file" name="detalle" class="form-control" required />
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">Cuotas</label>
-          <input type="file" name="cuotas" class="form-control" required />
         </div>
       </div>
       <div class="mt-4">

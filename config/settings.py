@@ -15,6 +15,8 @@ from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
+from config import db
+
 from .template import TEMPLATE_CONFIG, THEME_LAYOUT_DIR, THEME_VARIABLES
 
 load_dotenv()  # take environment variables from .env.
@@ -83,6 +85,7 @@ TEMPLATES = [
                 "config.context_processors.my_setting",
                 "config.context_processors.get_cookie",
                 "config.context_processors.environment",
+
             ],
             "libraries": {
                 "theme": "web_project.template_tags.theme",
@@ -101,13 +104,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
+DATABASES = db.POSTGRESQL
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -137,6 +134,7 @@ LANGUAGES = [
     ("fr", _("French")),
     ("ar", _("Arabic")),
     ("de", _("German")),
+    ("es", _("Spanish")),
     # Add more languages as needed
 ]
 
@@ -145,6 +143,7 @@ LANGUAGES = [
 LANGUAGE_CODE = "en"
 
 TIME_ZONE = "UTC"
+# TIME_ZONE = "America/Lima"
 
 USE_I18N = True
 
