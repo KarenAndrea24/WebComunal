@@ -4,24 +4,31 @@
 
 {% block title %}Carga masiva documentos{% endblock %}
 
+{% block vendor_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
+{% endblock %}
+
+
 {% block content %}
 <div class="card mb-4">
   <div class="card-body">
-    <h4 class="mb-4">Carga masiva de documentos</h4>
+    <h4 class="mb-4">{% trans "Carga masiva de documentos" %}</h4>
     <form method="post" enctype="multipart/form-data" id="carga-form">
       {% csrf_token %}
       <div class="row g-3">
         <div class="col-md-6">
-          <label class="form-label">Cabecera de documento</label>
+          <label class="form-label">{% trans "Cabecera de documento" %}</label>
           <input type="file" name="cabecera" class="form-control" required />
         </div>
         <div class="col-md-6">
-          <label class="form-label">Detalle de documento</label>
+          <label class="form-label">{% trans "Detalle de documento" %}</label>
           <input type="file" name="detalle" class="form-control" required />
         </div>
       </div>
       <div class="mt-4">
-        <button type="submit" class="btn btn-primary">Cargar archivos</button>
+        <button type="button" class="btn btn-primary" id="btn-preview">Cargar archivos</button>
+        <button type="button" class="btn btn-success" id="btn-register" disabled>Registrar documentos</button>
       </div>
     </form>
   </div>
@@ -30,44 +37,195 @@
 <!-- Sección de Previsualización también en una card -->
 <div class="card">
   <div class="card-body">
-    <h5 class="mb-3">Previsualización:</h5>
+    <h5 class="mb-3">{% trans "Previsualización:" %}</h5>
     <ul class="nav nav-tabs" id="previewTabs" role="tablist">
-      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#preview-cabecera">Cabecera</a></li>
-      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#preview-detalle">Detalle</a></li>
-      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#preview-cuotas">Cuotas</a></li>
+      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#preview-cabecera" role="tab" aria-controls="preview-cabecera" aria-selected="true">{% trans "Cabecera" %}</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#preview-detalle" role="tab" aria-controls="preview-detalle" aria-selected="false">{% trans "Detalle" %}</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#preview-cuotas" role="tab" aria-controls="preview-cuotas" aria-selected="false">{% trans 'Cuotas' %}</a></li>
     </ul>
     <div class="tab-content pt-3">
-      <div class="tab-pane fade show active" id="preview-cabecera"><table id="tablaCabecera" class="table datatable"></table></div>
-      <div class="tab-pane fade" id="preview-detalle"><table id="tablaDetalle" class="table datatable"></table></div>
-      <div class="tab-pane fade" id="preview-cuotas"><table id="tablaCuotas" class="table datatable"></table></div>
+      <div class="tab-pane fade show active" id="preview-cabecera" role="tabpanel" aria-labelledby="preview-cabecera-tab">
+        <div class="table-responsive">
+          <table id="tablaCabecera" class="table datatable w-100"></table></div>
+        </div>
+      <div class="tab-pane fade" id="preview-detalle" role="tabpanel" aria-labelledby="preview-detalle-tab">
+        <div class="table-responsive">
+          <table id="tablaDetalle" class="table datatable w-100"></table></div>
+        </div>
+      <div class="tab-pane fade" id="preview-cuotas" role="tabpanel" aria-labelledby="preview-cuotas-tab">
+        <div class="table-responsive">
+          <table id="tablaCuotas" class="table datatable w-100"></table></div>
+        </div>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block vendor_js %}
+{{ block.super }}
+<script src="{% static 'vendor/libs/datatables-bs5/datatables-bootstrap5.js' %}"></script>
+{% comment %} <script src="{% static 'vendor/libs/datatables-bs5/datatables.js' %}"></script> {% endcomment %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {% endblock %}
 
 {% block page_js %}
 {{ block.super }}
 
 <!-- Incluye primero los scripts de DataTables -->
-<script src="{% static 'vendor/libs/datatables-bs5/datatables-bootstrap5.js' %}"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+{% comment %} <script src="{% static 'js/carga-masiva/preview.js' %}"></script>
+<script src="{% static 'js/carga-masiva/register.js' %}"></script> {% endcomment %}
 
-<!-- Tu función renderTable -->
 <script>
 function renderTable(tableId, data) {
-  const keys = Object.keys(data[0]);
+  if (!Array.isArray(data) || !data.length) return;
+
   const table = $(`#${tableId}`);
-  const thead = keys.map(k => `<th>${k}</th>`).join("");
-  table.html(`<thead><tr>${thead}</tr></thead><tbody></tbody>`);
-  const tbody = table.find('tbody');
-  data.forEach(row => {
-    const tds = keys.map(k => `<td>${row[k]}</td>`).join("");
-    tbody.append(`<tr>${tds}</tr>`);
+  const columns = Object.keys(data[0]).map(key => ({
+      title: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      data: key
+    }));
+
+  // Destruye DataTable previa si ya existe
+  if ($.fn.DataTable.isDataTable(`#${tableId}`)) {
+    table.DataTable().clear().destroy();
+    table.empty();  // Limpia HTML
+  }
+
+  // Inicializa DataTable
+  table.DataTable({
+    data: data,
+    columns: columns,
+    responsive: false,
+    scrollX: true,
+    autoWidth: false,
+    pageLength: 5,
+    lengthChange: true,
+    searching: true,
+    ordering: true,
+    language: {
+      url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'  // para español
+    }
   });
-  table.DataTable();
 }
+
+document.getElementById("btn-preview").addEventListener("click", function () {
+  const form = document.getElementById("carga-form");
+  const formData = new FormData(form);
+
+  fetch("{% url 'carga-masiva-preview' %}", {
+    method: "POST",
+    body: formData,
+    headers: { "X-CSRFToken": getCookie("csrftoken") }
+  })
+  .then(async res => {
+    if (!res.ok){
+      let data;
+      try {
+        data = await res.json();
+      } catch (err) {
+        throw new Error("El servidor devolvió una respuesta no válida");
+      }
+      throw new Error(data.error || "Error al cargar los archivos");
+      }
+    return res.json();
+  })
+  .then(data => {
+    console.log("Datos recibidos:", data);
+    renderTable("tablaCabecera", data.cabecera);
+    renderTable("tablaDetalle", data.detalle);
+    renderTable("tablaCuotas", data.cuotas);
+
+    window.previewData = data;
+    document.getElementById("btn-register").disabled = false;
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Carga exitosa',
+      text: 'Los archivos se han cargado correctamente.',
+      timer: 3000,
+      showConfirmButton: false
+    });
+  })
+  .catch(error => {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error al cargar archivos',
+      text: error.message || 'No se pudo procesar los archivos'
+    })
+  })
+});
+
+document.getElementById("btn-register").addEventListener("click", function() {
+  if (!window.previewData) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'No hay datos para registrar',
+      text: 'Por favor, primero carga los archivos.'
+    });
+    return;
+  }
+
+  const btn = this;
+  btn.disabled = true;
+  btn.textContent = "Registrando...";
+
+  fetch("{% url 'carga-masiva-registrar' %}", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie("csrftoken")
+    },
+    body: JSON.stringify({
+      cabeceras: window.previewData.cabecera,
+      detalles: window.previewData.detalle,
+      cuotas: window.previewData.cuotas || []
+    })
+  }).then(res => res.json().then(data => ({ status: res.status, data })))
+    .then(({ status, data }) => {
+      console.log("Respuesta del servidor:", data);
+      if (status === 201) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Documentos guardados',
+          text: data.message || 'Se guardaron correctamente',
+          timer: 3000,
+          showConfirmButton: false
+        });
+      } else {
+        throw new Error(data.message || "Error inesperado");
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al guardar',
+        text: error.message || 'No se pudo completar el guardado'
+      });
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = "Registrar documentos";
+    });
+});
+
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith(name + "=")) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
 </script>
-
-
 
 {% endblock %}

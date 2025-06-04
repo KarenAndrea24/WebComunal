@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SampleView
+from .views import CargaMasivaPreviewView, RegistrarDocumentosView, SampleView
 
 
 urlpatterns = [
@@ -32,5 +32,15 @@ urlpatterns = [
         "notas-debito/",
         SampleView.as_view(template_name="notas_debito.html"),
         name="notas-debito",
+    ),
+    path(
+        "carga-masiva/previsualización/",
+        CargaMasivaPreviewView.as_view(),
+        name="carga-masiva-preview",
+    ),
+    path(
+        "carga-masiva/registrar/",
+        RegistrarDocumentosView.as_view(),
+        name="carga-masiva-registrar",
     )
 ]

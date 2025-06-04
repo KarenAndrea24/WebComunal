@@ -134,7 +134,6 @@ LANGUAGES = [
     ("fr", _("French")),
     ("ar", _("Arabic")),
     ("de", _("German")),
-    ("es", _("Spanish")),
     # Add more languages as needed
 ]
 
