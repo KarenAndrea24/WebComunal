@@ -73,16 +73,33 @@ class CargaMasivaPreviewView(View):
         cuotas_data = []
 
         for row in cabecera_df.fillna("").to_dict(orient='records'):
-            if str(row.get("APLICA_DETRACCION", "")).strip().upper().startswith("Y"):
-                monto_detraccion = float(row.get("MONTO_DET", 0))
-                porcentaje = float(row.get("PORCENTAJE_DET", 0))
-                fecha = row.get("FECHA_VENCIMIENTO")
-                cuotas_data.append({
-                    "ID_DOCUMENTO": row.get("ID_DOCUMENTO"),
-                    "FECHA": fecha,
-                    "PORCENTAJE": porcentaje,
-                    "TOTAL": monto_detraccion
-                })
+            if str(row.get("?APLICA_DETRACCION?", "")).strip().upper().startswith("Y"):
+                try:
+                    id_doc = row.get("ID_DOCUMENTO")
+                    fecha = row.get("FECHA_VENCIMIENTO")
+                    base = float(row.get("BASE_IMPONIBLE_SIN_IGV", 0))
+                    porcentaje = float(row.get("PORCENTAJE_DET", 0))
+                    total_documento = float(row.get("TOTAL_DOCUMENTO_IGV(CALCULABLE)", 0))
+
+                    # Segunda cuota: porcentaje aplicado a la base
+                    cuota2_total = round((porcentaje / 100) * base, 2)
+                    cuota1_total = round(total_documento - cuota2_total, 2)
+                    cuota1_pct = 100 - porcentaje
+
+                    cuotas_data.append({
+                        "ID_DOCUMENTO": id_doc,
+                        "FECHA": fecha,
+                        "PORCENTAJE": cuota1_pct,
+                        "TOTAL": cuota1_total
+                    })
+                    cuotas_data.append({
+                        "ID_DOCUMENTO": id_doc,
+                        "FECHA": fecha,
+                        "PORCENTAJE": porcentaje,
+                        "TOTAL": cuota2_total
+                    })
+                except Exception as e:
+                    logger.warning(f"Error calculando cuotas para el documento {row.get('ID_DOCUMENTO')}: {e}")
 
         return JsonResponse({
             "cabecera": cabecera_df.fillna("").to_dict(orient='records'),

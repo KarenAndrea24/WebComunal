@@ -8,32 +8,32 @@
     },
     {
       "url": "carga-masiva",
-      "icon": "menu-icon tf-icons ti ti-app-window",
+      "icon": "menu-icon tf-icons ti ti-file-upload",
       "name": "Carga masiva",
       "slug": "carga-masiva"
     },
     {
       "url": "facturas",
-      "icon": "menu-icon tf-icons ti ti-app-window",
+      "icon": "menu-icon tf-icons ti ti-receipt-2",
       "name": "Facturas",
       "slug": "facturas"
     },
     {
       "url": "boletas",
-      "icon": "menu-icon tf-icons ti ti-smart-home",
+      "icon": "menu-icon tf-icons ti ti-receipt",
       "name": "Boletas",
       "slug": "boletas"
     },
     {
       "url": "notas-credito",
-      "icon": "menu-icon tf-icons ti ti-smart-home",
-      "name": "Notas de crédito",
+      "icon": "menu-icon tf-icons ti ti-file-minus",
+      "name": "Notas de cr\u00e9dito",
       "slug": "notas-credito"
     },
     {
       "url": "notas-debito",
-      "icon": "menu-icon tf-icons ti ti-smart-home",
-      "name": "Notas de débito",
+      "icon": "menu-icon tf-icons ti ti-file-plus",
+      "name": "Notas de d\u00e9bito",
       "slug": "notas-debito"
     }
   ]
