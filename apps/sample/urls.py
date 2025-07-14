@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CargaMasivaPreviewView, RegistrarDocumentosView, SampleView
+from .views import CargaMasivaPreviewView, RegistrarDocumentosView, SampleView, boletas_json, facturas_json, notas_credito_json, notas_debito_json
 
 
 urlpatterns = [
@@ -33,6 +33,8 @@ urlpatterns = [
         SampleView.as_view(template_name="notas_debito.html"),
         name="notas-debito",
     ),
+
+
     path(
         "carga-masiva/previsualización/",
         CargaMasivaPreviewView.as_view(),
@@ -42,5 +44,17 @@ urlpatterns = [
         "carga-masiva/registrar/",
         RegistrarDocumentosView.as_view(),
         name="carga-masiva-registrar",
-    )
+    ),
+
+    # Facturas
+    path('facturas/data/', facturas_json, name='facturas_json'),
+
+    # Boletas
+    path('boletas/data/', boletas_json, name='boletas_json'),
+
+    # Notas de crédito
+    path('notas_credito/data/', notas_credito_json, name='notas_credito_json'),
+
+    # Notas de débito
+    path('notas_debito/data/', notas_debito_json, name='notas_debito_json'),
 ]

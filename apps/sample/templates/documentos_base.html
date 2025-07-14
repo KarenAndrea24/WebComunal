@@ -1,0 +1,126 @@
+{# templates/documentos_base.html #}
+{% extends layout_path %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block vendor_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}" />
+<link rel="stylesheet" href="{% static 'vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'vendor/libs/flatpickr/flatpickr.css' %}" />
+<link rel="stylesheet" href="{% static 'vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'vendor/libs/@form-validation/form-validation.css' %}" />
+{% endblock vendor_css %}
+
+{% block vendor_js %}
+{{ block.super }}
+<script src="{% static 'vendor/libs/datatables-bs5/datatables-bootstrap5.js' %}"></script>
+<script src="{% static 'vendor/libs/moment/moment.js' %}"></script>
+<script src="{% static 'vendor/libs/flatpickr/flatpickr.js' %}"></script>
+<script src="{% static 'vendor/libs/@form-validation/popular.js' %}"></script>
+<script src="{% static 'vendor/libs/@form-validation/bootstrap5.js' %}"></script>
+<script src="{% static 'vendor/libs/@form-validation/auto-focus.js' %}"></script>
+{% endblock vendor_js %}
+
+{% block page_js %}
+  <script>
+    const URL_DATOS = "{{ url_json }}";               // viene por contexto
+  </script>
+  {{ block.super }}
+  <script src="{% static 'js/datatable-docs.js' %}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initDocumentoTable({
+        urlDatos: URL_DATOS,
+        tablaSelector: '.datatables-basic',
+        filtrosSelector: '#filtros-documentos'
+      });
+    });
+  </script>
+{% endblock page_js %}
+
+{% block content %}
+  {# ---- Cabecera con filtros ---- #}
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+        <h4 class="mb-0">{{ titulo }}</h4>
+        <button type="button" id="limpiar-filtros" class="btn btn-label-primary d-flex align-items-center">
+          <i class="ti ti-file-export me-1"></i> Limpiar filtros
+        </button>
+      </div>
+
+      <form id="filtros-documentos" class="row g-2 mb-3">
+        <div class="col-md-3">
+          <label class="form-label mb-0">Serie</label>
+          <input type="text" id="filtro-serie" class="form-control" placeholder="Ej. F001">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label mb-0">Correlativo</label>
+          <input type="text" id="filtro-correlativo" class="form-control" placeholder="Ej. 000123">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label mb-0">Código cliente / RUC</label>
+          <input type="text" id="filtro-cod" class="form-control" placeholder="Ej. 20123456789">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label mb-0">Razón social</label>
+          <input type="text" id="filtro-razon" class="form-control" placeholder="Ej. Empresa XYZ S.A.C.">
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {# ---- Tabla ---- #}
+  <div class="card">
+    <div class="card-datatable table-responsive pt-0">
+      <table class="datatables-basic table">
+        <thead>
+          <tr>
+            <th></th>
+            <th></th>
+            <th>id</th>
+            <th>Serie documento</th>
+            <th>Código cliente</th>
+            <th>Razón social</th>
+            <th>Moneda</th>
+            <th>Serie</th>
+            <th>Correlativo</th>
+            <th>Condición pago</th>
+            <th>Cuenta asociada</th>
+            <th>Referencia</th>
+            <th>Fecha contabilización</th>
+            <th>Fecha vencimiento</th>
+            <th>Fecha documento</th>
+            <th>Tipo documento</th>
+            <th>Empleado ventas</th>
+            <th>Propietario</th>
+            <th>Descuento global</th>
+            <th>Tipo operación</th>
+            <th>Tipo base imponible</th>
+            <th>Aplica detracción</th>
+            <th>Aplica auto detracción</th>
+            <th>Concepto detracción</th>
+            <th>Porcentaje detracción</th>
+            <th>Base imponible</th>
+            <th>Impuesto</th>
+            <th>Total IGV</th>
+            <th>Monto detracción</th>
+            <th>Operación detracción</th>
+            <th>Estado FE</th>
+            <th>Tipo operación FE</th>
+            <th>Comentarios</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+{% endblock %}

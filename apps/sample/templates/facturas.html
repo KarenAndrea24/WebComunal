@@ -26,37 +26,58 @@
 {% endblock vendor_js %}
 
 {% block page_js %}
+<script>
+  const FACTURAS_URL = "{% url 'facturas_json' %}";
+</script>
 {{ block.super }}
 <script src="{% static 'js/tables-datatables-basic.js' %}"></script>
 {% endblock page_js %}
 
 {% block content %}
 
+
 <div class="card mb-4">
   <div class="card-body">
-    <form method="get" class="row g-3">
-      <div class="col-md-2">
-        <label class="form-label">Serie</label>
-        <input type="text" name="serie" class="form-control" placeholder= "Ingresa la serie"/>
-      </div>
-      <div class="col-md-2">
-        <label class="form-label">Correlativo</label>
-        <input type="text" name="correlativo" class="form-control" placeholder = "Ingrese el correlativo"/>
-      </div>
+
+    {# —————————— Encabezado de la vista de Facturas —————————— #}
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+      <!-- Título (puede ser dinámico) -->
+      <h4 class="mb-0">{{ titulo|default:"Facturas" }}</h4>
+
+      <!-- Botón Export reutilizando el mismo estilo de DataTables -->
+      {% comment %} <button id="btn-export-global" class="btn btn-label-primary d-flex align-items-center">
+        <i class="ti ti-file-export me-1"></i> Export
+      </button> {% endcomment %}
+      <button type="button" id="limpiar-filtros" class="btn btn-label-primary d-flex align-items-center">
+        <i class="ti ti-file-export me-1"></i> Limpiar filtros
+      </button>
+    </div>
+
+    <form id="filtros-facturas" class="row g-2 mb-3">
       <div class="col-md-3">
-        <label class="form-label">Código cliente / RUC</label>
-        <input type="text" name="cod_cliente" class="form-control" placeholder = "Ingrese el código de cliente"/>
+        <label class="form-label mb-0">Serie</label>
+        <input type="text" id="filtro-serie" class="form-control" placeholder="Ej. F001">
       </div>
-      <div class="col-md-4">
-        <label class="form-label">Razón social</label>
-        <input type="text" name="razon_social" class="form-control" placeholder = "Ingrese la razón social"/>
+
+      <div class="col-md-3">
+        <label class="form-label mb-0">Correlativo</label>
+        <input type="text" id="filtro-correlativo" class="form-control" placeholder="Ej. 000123">
       </div>
-      <div class="col-md-1 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+
+      <div class="col-md-3">
+        <label class="form-label mb-0">Código cliente / RUC</label>
+        <input type="text" id="filtro-cod" class="form-control" placeholder="Ej. 20123456789">
       </div>
+
+      <div class="col-md-3">
+        <label class="form-label mb-0">Razón social</label>
+        <input type="text" id="filtro-razon" class="form-control" placeholder="Ej. Empresa XYZ S.A.C.">
+      </div>
+
     </form>
   </div>
 </div>
+
 
 <!-- DataTable with Buttons -->
 <div class="card">
@@ -67,80 +88,41 @@
           <th></th>
           <th></th>
           <th>id</th>
+          <th>Serie documento</th>
           <th>Código cliente</th>
           <th>Razón social</th>
           <th>Moneda</th>
-          <th>Condición de pago</th>
-          <th>Fecha contabilización</th>
-          {% comment %} <th>Fecha vencimiento</th>
-          <th>Fecha documento</th>
-          <th>Tipo de documento</th>
           <th>Serie</th>
           <th>Correlativo</th>
+          <th>Condición pago</th>
+          <th>Cuenta asociada</th>
+          <th>Referencia</th>
+          <th>Fecha contabilización</th>
+          <th>Fecha vencimiento</th>
+          <th>Fecha documento</th>
+          <th>Tipo documento</th>
+          <th>Empleado ventas</th>
+          <th>Propietario</th>
           <th>Descuento global</th>
-          <th>Total documento IGV (Calculable)</th>
-          <th>Estado migración</th>
-          <th>Mensaje migración</th> {% endcomment %}
-          <th>Action</th>
+          <th>Tipo operación</th>
+          <th>Tipo base imponible</th>
+          <th>Aplica detracción</th>
+          <th>Aplica auto detracción</th>
+          <th>Concepto detracción</th>
+          <th>Porcentaje detracción</th>
+          <th>Base imponible</th>
+          <th>Impuesto</th>
+          <th>Total IGV</th>
+          <th>Monto detracción</th>
+          <th>Operación detracción</th>
+          <th>Estado FE</th>
+          <th>Tipo operación FE</th>
+          <th>Comentarios</th>
+          <th>Acciones</th>
         </tr>
       </thead>
     </table>
   </div>
 </div>
-<!-- Modal to add new record -->
-<div class="offcanvas offcanvas-end" id="add-new-record">
-  <div class="offcanvas-header border-bottom">
-    <h5 class="offcanvas-title" id="exampleModalLabel">New Record</h5>
-    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body flex-grow-1">
-    <form class="add-new-record pt-0 row g-2" id="form-add-new-record" onsubmit="return false">
-      <div class="col-sm-12">
-        <label class="form-label" for="basicFullname">Full Name</label>
-        <div class="input-group input-group-merge">
-          <span id="basicFullname2" class="input-group-text"><i class="ti ti-user"></i></span>
-          <input type="text" id="basicFullname" class="form-control dt-full-name" name="basicFullname" placeholder="John Doe" aria-label="John Doe" aria-describedby="basicFullname2" />
-        </div>
-      </div>
-      <div class="col-sm-12">
-        <label class="form-label" for="basicPost">Post</label>
-        <div class="input-group input-group-merge">
-          <span id="basicPost2" class="input-group-text"><i class='ti ti-briefcase'></i></span>
-          <input type="text" id="basicPost" name="basicPost" class="form-control dt-post" placeholder="Web Developer" aria-label="Web Developer" aria-describedby="basicPost2" />
-        </div>
-      </div>
-      <div class="col-sm-12">
-        <label class="form-label" for="basicEmail">Email</label>
-        <div class="input-group input-group-merge">
-          <span class="input-group-text"><i class="ti ti-mail"></i></span>
-          <input type="text" id="basicEmail" name="basicEmail" class="form-control dt-email" placeholder="john.doe@example.com" aria-label="john.doe@example.com" />
-        </div>
-        <div class="form-text">
-          You can use letters, numbers & periods
-        </div>
-      </div>
-      <div class="col-sm-12">
-        <label class="form-label" for="basicDate">Joining Date</label>
-        <div class="input-group input-group-merge">
-          <span id="basicDate2" class="input-group-text"><i class='ti ti-calendar'></i></span>
-          <input type="text" class="form-control dt-date" id="basicDate" name="basicDate" aria-describedby="basicDate2" placeholder="MM/DD/YYYY" aria-label="MM/DD/YYYY" />
-        </div>
-      </div>
-      <div class="col-sm-12">
-        <label class="form-label" for="basicSalary">Salary</label>
-        <div class="input-group input-group-merge">
-          <span id="basicSalary2" class="input-group-text"><i class='ti ti-currency-dollar'></i></span>
-          <input type="number" id="basicSalary" name="basicSalary" class="form-control dt-salary" placeholder="12000" aria-label="12000" aria-describedby="basicSalary2" />
-        </div>
-      </div>
-      <div class="col-sm-12">
-        <button type="submit" class="btn btn-primary data-submit me-sm-4 me-1">Submit</button>
-        <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
-      </div>
-    </form>
-
-  </div>
-</div>
-<!--/ DataTable with Buttons -->
 
 {% endblock %}

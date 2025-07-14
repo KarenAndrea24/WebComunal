@@ -8,8 +8,9 @@ class DocumentoBase(models.Model):
     razon_social = models.CharField(max_length=100)
     moneda = models.CharField(max_length=10)
     serie = models.CharField(max_length=10)
-    condicion_pago = models.IntegerField()
+    condicion_pago = models.IntegerField(null=True, blank=True)
     cuenta_asociada = models.CharField(max_length=15) # ver si todos son numero para colcoarle integer
+    referencia = models.CharField(max_length=100, null=True, blank=True)
     fecha_contabilizacion = models.DateField()
     fecha_vencimiento = models.DateField()
     fecha_documento = models.DateField()
@@ -19,9 +20,9 @@ class DocumentoBase(models.Model):
     propietario = models.CharField(max_length=100) # SON IDS QUIZAS DEBERIAN DE SER INTEGER NO CHARFIELD
     descuento_global = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     tipo_operacion = models.CharField(max_length=50) #aqui se debe de guardar el id no mas osea 01 o debe de guardarse todo el texto tambien? AQUI ES SOLO 2 EN LENGHT
-    tipo_base_imponible = models.CharField(max_length=2, null=True, blank=True)
-    aplica_detraccion = models.BooleanField(default=False)
-    aplica_auto_detraccion = models.BooleanField(default=False)
+    tipo_base_imponible = models.CharField(max_length=50, null=True, blank=True) #aqui se debe de guardar el id no mas osea 01 o debe de guardarse todo el texto tambien? AQUI ES SOLO 2 EN LENGHT
+    aplica_detraccion = models.CharField(max_length=1, null=True, blank=True)  #aqui se debe de guardar el id no mas osea 01 o debe de guardarse todo el texto tambien? AQUI ES SOLO 1 EN LENGHT
+    aplica_auto_detraccion = models.CharField(max_length=1, null=True, blank=True)
     concepto_detraccion = models.CharField(max_length=3, null=True, blank=True)
     porcentaje_detraccion = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
     base_imponible = models.DecimalField(max_digits=12, decimal_places=2)
@@ -30,7 +31,7 @@ class DocumentoBase(models.Model):
     monto_detraccion = models.DecimalField(max_digits=18, decimal_places=2, null=True, blank=True)
     operacion_detraccion = models.CharField(max_length=50)  #aqui se debe de guardar el id no mas osea 01 o debe de guardarse todo el texto tambien? AQUI ES SOLO 2 EN LENGHT
     estado_fe = models.CharField(max_length=2, default='0')
-    tipo_operacion_fe = models.CharField(max_length=50)  #aqui se debe de guardar el id no mas osea 01 o debe de guardarse todo el texto tambien? AQUI ES SOLO 4 EN LENGHT
+    tipo_operacion_fe = models.CharField(max_length=100)  #aqui se debe de guardar el id no mas osea 01 o debe de guardarse todo el texto tambien? AQUI ES SOLO 4 EN LENGHT
     comentarios = models.CharField(max_length=254, null=True, blank=True)
 
     class Meta:

@@ -25,7 +25,7 @@ class DetalleDocumento(models.Model):
     cc2_unidades_negocio = models.CharField(max_length=50, null=True, blank=True)
     cc3_local = models.CharField(max_length=50, null=True, blank=True)
     grupo_detraccion = models.CharField(max_length=50, null=True, blank=True) #aqui se debe de guardar el id no mas osea 01 o debe de guardarse todo el texto tambien? AQUI ES SOLO 3 EN LENGHT
-    solo_impuesto = models.BooleanField(default=False)
+    solo_impuesto = models.CharField(max_length=1, null=True, blank=True)
 
     def clean(self):
         allowed_models = ['factura', 'boleta', 'notacredito', 'notadebito']

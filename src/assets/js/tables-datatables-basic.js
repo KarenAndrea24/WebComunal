@@ -4,115 +4,6 @@
 
 'use strict';
 
-let fv, offCanvasEl;
-document.addEventListener('DOMContentLoaded', function (e) {
-  (function () {
-    const formAddNewRecord = document.getElementById('form-add-new-record');
-
-    setTimeout(() => {
-      const newRecord = document.querySelector('.create-new'),
-        offCanvasElement = document.querySelector('#add-new-record');
-
-      // To open offCanvas, to add new record
-      if (newRecord) {
-        newRecord.addEventListener('click', function () {
-          offCanvasEl = new bootstrap.Offcanvas(offCanvasElement);
-          // Empty fields on offCanvas open
-          (offCanvasElement.querySelector('.dt-full-name').value = ''),
-            (offCanvasElement.querySelector('.dt-post').value = ''),
-            (offCanvasElement.querySelector('.dt-email').value = ''),
-            (offCanvasElement.querySelector('.dt-date').value = ''),
-            (offCanvasElement.querySelector('.dt-salary').value = '');
-          // Open offCanvas with form
-          offCanvasEl.show();
-        });
-      }
-    }, 200);
-
-    // Form validation for Add new record
-    fv = FormValidation.formValidation(formAddNewRecord, {
-      fields: {
-        basicFullname: {
-          validators: {
-            notEmpty: {
-              message: 'The name is required'
-            }
-          }
-        },
-        basicPost: {
-          validators: {
-            notEmpty: {
-              message: 'Post field is required'
-            }
-          }
-        },
-        basicEmail: {
-          validators: {
-            notEmpty: {
-              message: 'The Email is required'
-            },
-            emailAddress: {
-              message: 'The value is not a valid email address'
-            }
-          }
-        },
-        basicDate: {
-          validators: {
-            notEmpty: {
-              message: 'Joining Date is required'
-            },
-            date: {
-              format: 'MM/DD/YYYY',
-              message: 'The value is not a valid date'
-            }
-          }
-        },
-        basicSalary: {
-          validators: {
-            notEmpty: {
-              message: 'Basic Salary is required'
-            }
-          }
-        }
-      },
-      plugins: {
-        trigger: new FormValidation.plugins.Trigger(),
-        bootstrap5: new FormValidation.plugins.Bootstrap5({
-          // Use this for enabling/changing valid/invalid class
-          // eleInvalidClass: '',
-          eleValidClass: '',
-          rowSelector: '.col-sm-12'
-        }),
-        submitButton: new FormValidation.plugins.SubmitButton(),
-        // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
-        autoFocus: new FormValidation.plugins.AutoFocus()
-      },
-      init: instance => {
-        instance.on('plugins.message.placed', function (e) {
-          if (e.element.parentElement.classList.contains('input-group')) {
-            e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
-          }
-        });
-      }
-    });
-
-    // FlatPickr Initialization & Validation
-    const flatpickrDate = document.querySelector('[name="basicDate"]');
-
-    if (flatpickrDate) {
-      flatpickrDate.flatpickr({
-        enableTime: false,
-        // See https://flatpickr.js.org/formatting/
-        dateFormat: 'm/d/Y',
-        // After selecting a date, we need to revalidate the field
-        onChange: function () {
-          fv.revalidateField('basicDate');
-        }
-      });
-    }
-  })();
-});
-
 // datatable (jquery)
 $(function () {
   var dt_basic_table = $('.datatables-basic'),
@@ -126,17 +17,42 @@ $(function () {
 
   if (dt_basic_table.length) {
     dt_basic = dt_basic_table.DataTable({
-      ajax: assetsPath + 'json/table-datatable.json',
+      ajax: FACTURAS_URL,
       columns: [
-        { data: '' },
+        { data: null },
+        { data: null },
         { data: 'id' },
-        { data: 'id' },
-        { data: 'full_name' },
-        { data: 'email' },
-        { data: 'start_date' },
-        { data: 'salary' },
-        { data: 'status' },
-        { data: '' }
+        { data: 'serie_documento' },
+        { data: 'codigo_cliente' },
+        { data: 'razon_social' },
+        { data: 'moneda' },
+        { data: 'serie' },
+        { data: 'correlativo' },
+        { data: 'condicion_pago' },
+        { data: 'cuenta_asociada' },
+        { data: 'referencia' },
+        { data: 'fecha_contabilizacion' },
+        { data: 'fecha_vencimiento' },
+        { data: 'fecha_documento' },
+        { data: 'tipo_documento' },
+        { data: 'empleado_ventas' },
+        { data: 'propietario' },
+        { data: 'descuento_global' },
+        { data: 'tipo_operacion' },
+        { data: 'tipo_base_imponible' },
+        { data: 'aplica_detraccion' },
+        { data: 'aplica_auto_detraccion' },
+        { data: 'concepto_detraccion' },
+        { data: 'porcentaje_detraccion' },
+        { data: 'base_imponible' },
+        { data: 'impuesto' },
+        { data: 'total_igv' },
+        { data: 'monto_detraccion' },
+        { data: 'operacion_detraccion' },
+        { data: 'estado_fe' },
+        { data: 'tipo_operacion_fe' },
+        { data: 'comentarios' },
+        { data: null }
       ],
       columnDefs: [
         {
@@ -168,48 +84,6 @@ $(function () {
           targets: 2,
           searchable: false,
           visible: false
-        },
-        {
-          // Avatar image/badge, Name and post
-          targets: 3,
-          responsivePriority: 4,
-          render: function (data, type, full, meta) {
-            var $user_img = full['avatar'],
-              $name = full['full_name'],
-              $post = full['post'];
-            if ($user_img) {
-              // For Avatar image
-              var $output =
-                '<img src="' + assetsPath + 'img/avatars/' + $user_img + '" alt="Avatar" class="rounded-circle">';
-            } else {
-              // For Avatar badge
-              var stateNum = Math.floor(Math.random() * 6);
-              var states = ['success', 'danger', 'warning', 'info', 'primary', 'secondary'];
-              var $state = states[stateNum],
-                $name = full['full_name'],
-                $initials = $name.match(/\b\w/g) || [];
-              $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-              $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
-            }
-            // Creates full output for row
-            var $row_output =
-              '<div class="d-flex justify-content-start align-items-center user-name">' +
-              '<div class="avatar-wrapper">' +
-              '<div class="avatar me-2">' +
-              $output +
-              '</div>' +
-              '</div>' +
-              '<div class="d-flex flex-column">' +
-              '<span class="emp_name text-truncate">' +
-              $name +
-              '</span>' +
-              '<small class="emp_post text-truncate text-muted">' +
-              $post +
-              '</small>' +
-              '</div>' +
-              '</div>';
-            return $row_output;
-          }
         },
         {
           responsivePriority: 1,
@@ -408,10 +282,6 @@ $(function () {
             }
           ]
         },
-        {
-          text: '<i class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Record</span>',
-          className: 'create-new btn btn-primary waves-effect waves-light'
-        }
       ],
       responsive: {
         details: {
@@ -449,38 +319,38 @@ $(function () {
         $('.card-header').after('<hr class="my-0">');
       }
     });
-    $('div.head-label').html('<h5 class="card-title mb-0">Facturas</h5>');
+    // $('div.head-label').html('<h5 class="card-title mb-0">Facturas</h5>');
+
+    // ————————————————————————————————
+    // Capta cambios de los filtros externos
+    // ————————————————————————————————
+    $('#filtro-serie').on('keyup change', function () {
+      dt_basic.column(7).search(this.value).draw();           // 7 = índice de 'serie_documento'
+    });
+
+    $('#filtro-correlativo').on('keyup change', function () {
+      dt_basic.column(8).search(this.value).draw();           // 8 = índice de 'correlativo'
+    });
+
+    $('#filtro-cod').on('keyup change', function () {
+      dt_basic.column(4).search(this.value).draw();           // 4 = 'codigo_cliente'
+    });
+
+    $('#filtro-razon').on('keyup change', function () {
+      dt_basic.column(5).search(this.value).draw();           // 5 = 'razon_social'
+    });
+
+    $('#limpiar-filtros').on('click', function () {
+      $('#filtros-facturas input').val('');        // Vacía todos los inputs
+      dt_basic.columns().search('').draw();        // Restablece la tabla
+    });
+
+    // $('#btn-export-global').on('click', function () {
+    //   // dispara el mismo dropdown de exportación
+    //   $('.dt-buttons button.buttons-collection').click();
+    // });
+
   }
-
-  // Add New record
-  // ? Remove/Update this code as per your requirements
-  var count = 101;
-  // On form submit, if form is valid
-  fv.on('core.form.valid', function () {
-    var $new_name = $('.add-new-record .dt-full-name').val(),
-      $new_post = $('.add-new-record .dt-post').val(),
-      $new_email = $('.add-new-record .dt-email').val(),
-      $new_date = $('.add-new-record .dt-date').val(),
-      $new_salary = $('.add-new-record .dt-salary').val();
-
-    if ($new_name != '') {
-      dt_basic.row
-        .add({
-          id: count,
-          full_name: $new_name,
-          post: $new_post,
-          email: $new_email,
-          start_date: $new_date,
-          salary: '$' + $new_salary,
-          status: 5
-        })
-        .draw();
-      count++;
-
-      // Hide offcanvas using javascript method
-      offCanvasEl.hide();
-    }
-  });
 
   // Delete Record
   $('.datatables-basic tbody').on('click', '.delete-record', function () {

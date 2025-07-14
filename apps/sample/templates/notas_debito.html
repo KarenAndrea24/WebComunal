@@ -1,0 +1,8 @@
+{# templates/notas_debito.html #}
+{% extends "documentos_base.html" %}
+
+{% comment %} {% url 'notas_debito_json' as url_notas_debito %}
+{% block extra_context %}
+  {% with titulo="Notas de débito" url_json=url_notas_debito %}
+  {% endwith %}
+{% endblock %} {% endcomment %}
