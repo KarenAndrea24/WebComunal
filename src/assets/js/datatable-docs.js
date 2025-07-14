@@ -170,11 +170,8 @@ function getColumnDefs () {
         // <a class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit"><i class="ti ti-pencil ti-md"></i></a>
         `
         <div class="btn-group" role="group">
-          <button class="btn btn-sm btn-primary btn-icon btn-view" data-id="${full.id}" title="Visualizar">
+          <button class="btn btn-sm btn-primary btn-icon btn-view  me-2" data-id="${full.id}" title="Visualizar">
             <i class="ti ti-eye"></i>
-          </button>
-          <button class="btn btn-sm btn-warning btn-icon btn-edit" data-id="${full.id}" title="Editar">
-            <i class="ti ti-pencil"></i>
           </button>
           <button class="btn btn-sm btn-danger  btn-icon btn-delete" data-id="${full.id}" title="Borrar">
             <i class="ti ti-trash"></i>
