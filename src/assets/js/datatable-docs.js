@@ -20,40 +20,20 @@ function initDocumentoTable ({ urlDatos, tablaSelector, filtrosSelector }) {
   if (!$tabla.length) return null;
 
   const columnas = [
-    { data: null },                      // control (responsive)
-    { data: null },                      // checkbox
-    { data: 'id', visible: false, searchable: false },
-    { data: 'serie_documento' },
+    { data: null }, // control (responsive)
+    { data: null }, // checkbox
+    { data: 'tipo_documento' },
+    { data: 'serie' },
+    { data: 'correlativo' },
     { data: 'codigo_cliente' },
     { data: 'razon_social' },
     { data: 'moneda' },
-    { data: 'serie' },
-    { data: 'correlativo' },
-    { data: 'condicion_pago' },
-    { data: 'cuenta_asociada' },
-    { data: 'referencia' },
-    { data: 'fecha_contabilizacion' },
-    { data: 'fecha_vencimiento' },
     { data: 'fecha_documento' },
-    { data: 'tipo_documento' },
-    { data: 'empleado_ventas' },
-    { data: 'propietario' },
-    { data: 'descuento_global' },
-    { data: 'tipo_operacion' },
-    { data: 'tipo_base_imponible' },
-    { data: 'aplica_detraccion' },
-    { data: 'aplica_auto_detraccion' },
-    { data: 'concepto_detraccion' },
-    { data: 'porcentaje_detraccion' },
     { data: 'base_imponible' },
     { data: 'impuesto' },
     { data: 'total_igv' },
-    { data: 'monto_detraccion' },
-    { data: 'operacion_detraccion' },
     { data: 'estado_fe' },
-    { data: 'tipo_operacion_fe' },
-    { data: 'comentarios' },
-    { data: null }                       // acciones
+    { data: null }
   ];
 
   const dt = $tabla.DataTable({
@@ -62,25 +42,57 @@ function initDocumentoTable ({ urlDatos, tablaSelector, filtrosSelector }) {
     columnDefs: getColumnDefs(),
     order: [[2, 'desc']],
     dom: datatableDom(),
-    displayLength: 7,
-    lengthMenu: [7, 10, 25, 50, 75, 100],
+    displayLength: 5,
+    lengthMenu: [5, 10, 25, 50],
     language: datatableLang(),
     buttons: exportButtons(),
     responsive: responsiveCfg(),
+    scrollX: true,
+    autoWidth: false,
     initComplete: () => $('.card-header').after('<hr class="my-0">')
   });
+
+
+/* --- Visualizar ---------------------------------------------------------- */
+$tabla.on('click', '.btn-view', function () {
+  const id = $(this).data('id');
+  $.get(`/documentos/${id}/`, html => {
+    $('#docModal .modal-body').html(html);
+    $('#docModal').modal('show');
+  });
+});
+
+/* --- Editar -------------------------------------------------------------- */
+$tabla.on('click', '.btn-edit', function () {
+  const id = $(this).data('id');
+  window.location.href = `/documentos/${id}/editar/`;
+  // ó  abre un modal similar si prefieres edición in-place
+});
+
+/* --- Borrar -------------------------------------------------------------- */
+$tabla.on('click', '.btn-delete', function () {
+  const id = $(this).data('id');
+  if (!confirm('¿Seguro que deseas borrar este documento?')) return;
+  $.ajax({
+    url: `/documentos/${id}/`,
+    type: 'DELETE',
+    headers: { 'X-CSRFToken': csrfToken },   // toma tu token de un meta o cookie
+    success: () => dt.row($(this).parents('tr')).remove().draw(false),
+    error  : () => alert('No se pudo borrar')
+  });
+});
+
 
   // ------------------------------
   // Filtros externos (keyup/change)
   // ------------------------------
   const $f = $(filtrosSelector);
-  $f.on('keyup change', '#filtro-serie', function () { dt.column(7).search(this.value).draw(); });
-  $f.on('keyup change', '#filtro-correlativo', function () { dt.column(8).search(this.value).draw(); });
-  $f.on('keyup change', '#filtro-cod', function () { dt.column(4).search(this.value).draw(); });
-  $f.on('keyup change', '#filtro-razon', function () { dt.column(5).search(this.value).draw(); });
-  // $f.on('click', '#limpiar-filtros', () => { $f[0].reset(); dt.columns().search('').draw(); });
+  $f.on('keyup change', '#filtro-serie', function () { dt.column(3).search(this.value).draw(); });
+  $f.on('keyup change', '#filtro-correlativo', function () { dt.column(4).search(this.value).draw(); });
+  $f.on('keyup change', '#filtro-cod', function () { dt.column(5).search(this.value).draw(); });
+  $f.on('keyup change', '#filtro-razon', function () { dt.column(6).search(this.value).draw(); });
   $('#limpiar-filtros').on('click', () => {
-    $f[0].reset();           // vacía inputs
+    $f[0].reset(); // vacía inputs
     dt.columns().search('').draw();
   });
 
@@ -141,20 +153,34 @@ function getColumnDefs () {
     {
       // Acciones – placeholder (puedes enlazar a vistas/URLs reales)
       targets: -1,
-      title: 'Actions',
+      title: 'Acciones',
       orderable: false,
       searchable: false,
-      render: () => `
-        <div class="d-inline-block">
-          <a class="btn btn-sm btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-md"></i></a>
-          <ul class="dropdown-menu dropdown-menu-end m-0">
-            <li><a class="dropdown-item">Details</a></li>
-            <li><a class="dropdown-item">Archive</a></li>
-            <div class="dropdown-divider"></div>
-            <li><a class="dropdown-item text-danger delete-record">Delete</a></li>
-          </ul>
+      responsivePriority: 1,
+      render: (data, type, full) => 
+        //         <div class="d-inline-block">
+        //   <a class="btn btn-sm btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical ti-md"></i></a>
+        //   <ul class="dropdown-menu dropdown-menu-end m-0">
+        //     <li><a class="dropdown-item">Details</a></li>
+        //     <li><a class="dropdown-item">Archive</a></li>
+        //     <div class="dropdown-divider"></div>
+        //     <li><a class="dropdown-item text-danger delete-record">Delete</a></li>
+        //   </ul>
+        // </div>
+        // <a class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit"><i class="ti ti-pencil ti-md"></i></a>
+        `
+        <div class="btn-group" role="group">
+          <button class="btn btn-sm btn-primary btn-icon btn-view" data-id="${full.id}" title="Visualizar">
+            <i class="ti ti-eye"></i>
+          </button>
+          <button class="btn btn-sm btn-warning btn-icon btn-edit" data-id="${full.id}" title="Editar">
+            <i class="ti ti-pencil"></i>
+          </button>
+          <button class="btn btn-sm btn-danger  btn-icon btn-delete" data-id="${full.id}" title="Borrar">
+            <i class="ti ti-trash"></i>
+          </button>
         </div>
-        <a class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit"><i class="ti ti-pencil ti-md"></i></a>`
+        `
     }
   ];
 }

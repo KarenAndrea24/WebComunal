@@ -5,9 +5,11 @@ from decimal import Decimal, InvalidOperation
 from django.db import transaction
 import json
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic import TemplateView
 import pandas as pd
+from apps.sample.forms import DetalleDocumentoFormSet, FacturaForm
 from apps.sample.models.cuota import Cuota
 from apps.sample.models.detalle import DetalleDocumento
 from apps.sample.models.documento_base import Boleta, Factura, NotaCredito, NotaDebito
@@ -363,3 +365,41 @@ def notas_debito_json(request):
     )
     data = list(notas_debito)
     return JsonResponse({'data': data})
+
+
+def documento_detalle(request, pk):
+    factura = get_object_or_404(Factura, pk=pk)
+    form      = FacturaForm(instance=factura)
+
+    content_type = ContentType.objects.get_for_model(Factura)
+    detalles = DetalleDocumento.objects.filter(
+        content_type=content_type,
+        object_id=factura.id
+    )
+
+    return render(request, 'documentos/modals/modal_visualizacion_documento.html', {
+        'form': form,
+        'detalles': detalles
+    })
+
+def documento_editar(request, pk):
+    factura = get_object_or_404(Factura, pk=pk)
+
+    if request.method == "POST":
+        form      = FacturaForm(request.POST, instance=factura)
+        formset   = DetalleDocumentoFormSet(
+            request.POST,
+            instance=factura,
+            queryset=factura.detalledocumento_set.all()
+        )
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            # formset.save() rellenará automáticamente content_type y object_id
+            formset.save()
+            ...
+    else:
+        form    = FacturaForm(instance=factura)
+        formset = DetalleDocumentoFormSet(instance=factura)
+
+    return render(request, "documentos/editar.html",
+                  {"form": form, "formset": formset})

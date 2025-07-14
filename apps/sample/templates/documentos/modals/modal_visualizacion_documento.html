@@ -1,0 +1,67 @@
+<form>
+  <h6 class="mb-3">Cabecera</h6>
+  <div class="row g-2">
+    {% for field in form.visible_fields %}
+    <div class="col-12 col-md-3">  <!-- 12/3 = 4 columnas en ≥ md -->
+      <label class="form-label fw-semibold mb-0">{{ field.label }}</label>
+        {{ field }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <h6 class="mt-4 mb-2">Detalle</h6>
+  <div class="table-responsive pt-0">
+    <table id="tabla-documentos-visualizacion" class="table table-striped table-sm table-bordered" style="min-width: 1800px;">
+    {% comment %} <table id="tabla-documentos-visualizacion" class="table table-striped table-sm table-bordered" style="min-width: 1800px;"> {% endcomment %}
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Código</th>
+          <th>Descripción</th>
+          <th>Cantidad</th>
+          <th>Moneda</th>
+          <th>Unidad</th>
+          <th>Precio</th>
+          <th>Descuento</th>
+          <th>Total</th>
+          <th>Impuesto</th>
+          <th>Afectación IGV</th>
+          <th>Cuenta Mayor</th>
+          <th>CC1</th>
+          <th>CC2</th>
+          <th>CC3</th>
+          <th>Grupo Detracción</th>
+          <th>Solo Impuesto</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in detalles %}
+          <tr>
+            <td>{{ d.numero_linea }}</td>
+            <td>{{ d.codigo_articulo }}</td>
+            <td>{{ d.descripcion }}</td>
+            <td>{{ d.cantidad }}</td>
+            <td>{{ d.moneda }}</td>
+            <td>{{ d.articulo_unidad }}</td>
+            <td>{{ d.precio_unidad }}</td>
+            <td>{{ d.descuento }}</td>
+            <td>{{ d.total_moneda_extranjera }}</td>
+            <td>{{ d.impuesto }}</td>
+            <td>{{ d.tipo_afectacion_igv }}</td>
+            <td>{{ d.cuenta_mayor }}</td>
+            <td>{{ d.cc1_general }}</td>
+            <td>{{ d.cc2_unidades_negocio }}</td>
+            <td>{{ d.cc3_local }}</td>
+            <td>{{ d.grupo_detraccion }}</td>
+            <td>{{ d.solo_impuesto }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</form>
+
+<script src="/static/js/documentos/accion_visualizacion/datatables-documentos-visualizacion.js"></script>
+
+
+  {% comment %} <script src="{% static 'js/documentos/accion_visualizacion/datatables-documentos-visualizacion.js' %}"></script> {% endcomment %}

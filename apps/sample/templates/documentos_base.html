@@ -28,7 +28,7 @@
 
 {% block page_js %}
   <script>
-    const URL_DATOS = "{{ url_json }}";               // viene por contexto
+    const URL_DATOS = "{{ url_json }}"; // viene por contexto
   </script>
   {{ block.super }}
   <script src="{% static 'js/datatable-docs.js' %}"></script>
@@ -42,6 +42,8 @@
     });
   </script>
 {% endblock page_js %}
+
+{% block extra_js %}{% endblock extra_js %}
 
 {% block content %}
   {# ---- Cabecera con filtros ---- #}
@@ -78,45 +80,37 @@
     </div>
   </div>
 
+  <div class="modal fade" id="docModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Detalle del documento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body"><!-- AJAX inject --></div>
+    </div>
+  </div>
+</div>
+
   {# ---- Tabla ---- #}
   <div class="card">
     <div class="card-datatable table-responsive pt-0">
-      <table class="datatables-basic table">
+      <table class="datatables-basic table" style="min-width: 1800px;">
         <thead>
           <tr>
             <th></th>
             <th></th>
-            <th>id</th>
-            <th>Serie documento</th>
+            <th>Tipo documento</th>
+            <th>Serie</th>
+            <th>Correlativo</th>
             <th>Código cliente</th>
             <th>Razón social</th>
             <th>Moneda</th>
-            <th>Serie</th>
-            <th>Correlativo</th>
-            <th>Condición pago</th>
-            <th>Cuenta asociada</th>
-            <th>Referencia</th>
-            <th>Fecha contabilización</th>
-            <th>Fecha vencimiento</th>
             <th>Fecha documento</th>
-            <th>Tipo documento</th>
-            <th>Empleado ventas</th>
-            <th>Propietario</th>
-            <th>Descuento global</th>
-            <th>Tipo operación</th>
-            <th>Tipo base imponible</th>
-            <th>Aplica detracción</th>
-            <th>Aplica auto detracción</th>
-            <th>Concepto detracción</th>
-            <th>Porcentaje detracción</th>
             <th>Base imponible</th>
             <th>Impuesto</th>
             <th>Total IGV</th>
-            <th>Monto detracción</th>
-            <th>Operación detracción</th>
             <th>Estado FE</th>
-            <th>Tipo operación FE</th>
-            <th>Comentarios</th>
             <th>Acciones</th>
           </tr>
         </thead>
