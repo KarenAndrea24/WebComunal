@@ -1,5 +1,10 @@
 from django.db import models
 
+ESTADO_MIGRACION_CHOICES = [
+    ('pendiente', 'Pendiente'),
+    ('migrado', 'Migrado'),
+    ('error_migracion', 'Error de migración'),
+]
 
 class DocumentoBase(models.Model):
     # id_externo = models.CharField(max_length=50, unique=True)
@@ -33,6 +38,8 @@ class DocumentoBase(models.Model):
     estado_fe = models.CharField(max_length=2, default='0')
     tipo_operacion_fe = models.CharField(max_length=100)  #aqui se debe de guardar el id no mas osea 01 o debe de guardarse todo el texto tambien? AQUI ES SOLO 4 EN LENGHT
     comentarios = models.CharField(max_length=254, null=True, blank=True)
+    estado_migracion = models.CharField(max_length=50, choices=ESTADO_MIGRACION_CHOICES, default='pendiente')
+    descripcion_migracion = models.TextField(null=True, blank=True)
 
     class Meta:
         abstract = True
