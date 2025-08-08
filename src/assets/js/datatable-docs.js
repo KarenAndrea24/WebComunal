@@ -71,16 +71,24 @@ $tabla.on('click', '.btn-edit', function () {
 
 /* --- Borrar -------------------------------------------------------------- */
 $tabla.on('click', '.btn-delete', function () {
-  const id = $(this).data('id');
+  const id   = $(this).data('id');
+  const tipo = $(this).data('tipo'); // "01"|"03"|"07"|"08"
   if (!confirm('¿Seguro que deseas borrar este documento?')) return;
+
   $.ajax({
-    url: `/documentos/${id}/`,
+    url: `/documentos/${id}/?tipo=${tipo}`,
     type: 'DELETE',
-    headers: { 'X-CSRFToken': csrfToken },   // toma tu token de un meta o cookie
-    success: () => dt.row($(this).parents('tr')).remove().draw(false),
-    error  : () => alert('No se pudo borrar')
+    headers: { 'X-CSRFToken': csrfToken },
+    success: () => {
+      dt.row($(this).parents('tr')).remove().draw(false);
+    },
+    error: (xhr) => {
+      const msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'No se pudo borrar';
+      alert(msg);
+    }
   });
 });
+
 
 
   // ------------------------------
@@ -238,24 +246,6 @@ function responsiveCfg () {
   };
 }
 
-$tabla.on('click', '.btn-delete', function () {
-  const id   = $(this).data('id');
-  const tipo = $(this).data('tipo'); // "01"|"03"|"07"|"08"
-  if (!confirm('¿Seguro que deseas borrar este documento?')) return;
-
-  $.ajax({
-    url: `/documentos/${id}/?tipo=${tipo}`,
-    type: 'DELETE',
-    headers: { 'X-CSRFToken': csrfToken }, // asegúrate de tener csrfToken
-    success: () => {
-      dt.row($(this).parents('tr')).remove().draw(false);
-    },
-    error: (xhr) => {
-      const msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'No se pudo borrar';
-      alert(msg);
-    }
-  });
-});
 
 function getCookie (name) {
   const value = `; ${document.cookie}`;
