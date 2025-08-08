@@ -34,7 +34,7 @@
 
 .toast-close-button:hover,
 .toast-close-button:focus {
-  color: #000000;
+  color: #34363a;
   text-decoration: none;
   cursor: pointer;
   opacity: 0.4;
@@ -130,9 +130,9 @@ button.toast-close-button {
 }
 
 #toast-container > div:hover {
-  -moz-box-shadow: 0 0 12px #000000;
-  -webkit-box-shadow: 0 0 12px #000000;
-  box-shadow: 0 0 12px #000000;
+  -moz-box-shadow: 0 0 12px #34363a;
+  -webkit-box-shadow: 0 0 12px #34363a;
+  box-shadow: 0 0 12px #34363a;
   opacity: 1;
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   filter: alpha(opacity=100);
@@ -194,7 +194,7 @@ button.toast-close-button {
   left: 0;
   bottom: 0;
   height: 4px;
-  background-color: #000000;
+  background-color: #34363a;
   opacity: 0.4;
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
   filter: alpha(opacity=40);
@@ -232,7 +232,7 @@ button.toast-close-button {
   margin-right: 0.75rem !important;
 }
 .toast-message a {
-  color: #7367f0;
+  color: #f2c700;
 }
 .toast-message a:hover {
   color: rgba(115, 103, 240, 0.6);

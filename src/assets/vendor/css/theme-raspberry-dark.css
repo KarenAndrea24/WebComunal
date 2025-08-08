@@ -821,22 +821,22 @@ button.list-group-item-primary.active {
 .jstree-default .jstree-wholerow-hovered,
 .jstree-default .jstree-hovered {
   background: rgba(115, 103, 240, 0.16);
-  color: #7367f0;
+  color: #f2c700;
 }
 .jstree-default .jstree-wholerow-clicked,
 .jstree-default .jstree-clicked {
-  background: #7367f0;
+  background: #f2c700;
   color: #fff;
 }
 
 .jstree-default-dark .jstree-wholerow-hovered,
 .jstree-default-dark .jstree-hovered {
   background: rgba(115, 103, 240, 0.16);
-  color: #7367f0;
+  color: #f2c700;
 }
 .jstree-default-dark .jstree-wholerow-clicked,
 .jstree-default-dark .jstree-clicked {
-  background: #7367f0;
+  background: #f2c700;
   color: #fff;
 }
 
@@ -1232,7 +1232,7 @@ li.ui-timepicker-selected,
   border-bottom-color: #cc0a53;
 }
 .shepherd-element .shepherd-button:not(:disabled).btn-label-secondary {
-  color: #808390 !important;
+  color: #34363a !important;
   border-color: transparent !important;
   background: #3c4054 !important;
 }
@@ -1242,19 +1242,19 @@ li.ui-timepicker-selected,
 .shepherd-element .shepherd-button:not(:disabled).btn-label-secondary:hover {
   border-color: transparent !important;
   background: #42465a !important;
-  color: #808390 !important;
+  color: #34363a !important;
 }
 .shepherd-element .shepherd-button:not(:disabled).btn-label-secondary:focus, .shepherd-element .shepherd-button:not(:disabled).btn-label-secondary.focus {
-  color: #808390;
+  color: #34363a;
   background: #42465a;
 }
 .shepherd-element .shepherd-button:not(:disabled).btn-label-secondary:active, .shepherd-element .shepherd-button:not(:disabled).btn-label-secondary.active, .shepherd-element .shepherd-button:not(:disabled).btn-label-secondary.show.dropdown-toggle, .show > .shepherd-element .shepherd-button:not(:disabled).btn-label-secondary.dropdown-toggle {
-  color: #808390 !important;
+  color: #34363a !important;
   background-color: #42465a !important;
   border-color: transparent !important;
 }
 .shepherd-element .shepherd-button:not(:disabled).btn-label-secondary.disabled, .shepherd-element .shepherd-button:not(:disabled).btn-label-secondary:disabled {
-  color: #808390 !important;
+  color: #34363a !important;
   border-color: transparent !important;
   background: #3c4054 !important;
 }

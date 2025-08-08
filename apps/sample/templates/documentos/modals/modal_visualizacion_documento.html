@@ -1,67 +1,202 @@
+
 <form>
   <h6 class="mb-3">Cabecera</h6>
-  <div class="row g-2">
-    {% for field in form.visible_fields %}
-    <div class="col-12 col-md-3">  <!-- 12/3 = 4 columnas en ≥ md -->
-      <label class="form-label fw-semibold mb-0">{{ field.label }}</label>
-        {{ field }}
+  <div class="row">
+    <!-- Columna izquierda -->
+    <div class="col-12 col-lg-9">
+      <!-- Cabecera general -->
+      <div class="row g-2">
+        <div class="col-12 col-md-3">
+          <label class="form-label fw-semibold mb-0">Código de cliente</label>
+          <input type="text" class="form-control" value="{{ form.instance.codigo_cliente }}" disabled>
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label fw-semibold mb-0">Razón social</label>
+          <input type="text" class="form-control" value="{{ form.instance.razon_social }}" disabled>
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label fw-semibold mb-0">Moneda</label>
+          <input type="text" class="form-control" value="{{ form.instance.moneda }}" disabled>
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label fw-semibold mb-0">Tipo de documento</label>
+          <input type="text" class="form-control" value="{{ form.instance.tipo_documento }}" disabled>
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label fw-semibold mb-0">Serie</label>
+          <input type="text" class="form-control" value="{{ form.instance.serie }}" disabled>
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label fw-semibold mb-0">Correlativo</label>
+          <input type="text" class="form-control" value="{{ form.instance.correlativo }}" disabled>
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label fw-semibold mb-0">Referencia</label>
+          <input type="text" class="form-control" value="{{ form.instance.referencia }}" disabled>
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label">Fecha contabilización</label>
+          <input type="text" class="form-control" value="{{ form.instance.fecha_contabilizacion|date:'d/m/Y' }}" disabled>
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label">Fecha vencimiento</label>
+          <input type="text" class="form-control" value="{{ form.instance.fecha_vencimiento|date:'d/m/Y' }}" disabled>
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label">Fecha documento</label>
+          <input type="text" class="form-control" value="{{ form.instance.fecha_documento|date:'d/m/Y' }}" disabled>
+        </div>
       </div>
-    {% endfor %}
-  </div>
 
-  <h6 class="mt-4 mb-2">Detalle</h6>
-  <div class="table-responsive pt-0">
-    <table id="tabla-documentos-visualizacion" class="table table-striped table-sm table-bordered" style="min-width: 1800px;">
-    {% comment %} <table id="tabla-documentos-visualizacion" class="table table-striped table-sm table-bordered" style="min-width: 1800px;"> {% endcomment %}
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Código</th>
-          <th>Descripción</th>
-          <th>Cantidad</th>
-          <th>Moneda</th>
-          <th>Unidad</th>
-          <th>Precio</th>
-          <th>Descuento</th>
-          <th>Total</th>
-          <th>Impuesto</th>
-          <th>Afectación IGV</th>
-          <th>Cuenta Mayor</th>
-          <th>CC1</th>
-          <th>CC2</th>
-          <th>CC3</th>
-          <th>Grupo Detracción</th>
-          <th>Solo Impuesto</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for d in detalles %}
-          <tr>
-            <td>{{ d.numero_linea }}</td>
-            <td>{{ d.codigo_articulo }}</td>
-            <td>{{ d.descripcion }}</td>
-            <td>{{ d.cantidad }}</td>
-            <td>{{ d.moneda }}</td>
-            <td>{{ d.articulo_unidad }}</td>
-            <td>{{ d.precio_unidad }}</td>
-            <td>{{ d.descuento }}</td>
-            <td>{{ d.total_moneda_extranjera }}</td>
-            <td>{{ d.impuesto }}</td>
-            <td>{{ d.tipo_afectacion_igv }}</td>
-            <td>{{ d.cuenta_mayor }}</td>
-            <td>{{ d.cc1_general }}</td>
-            <td>{{ d.cc2_unidades_negocio }}</td>
-            <td>{{ d.cc3_local }}</td>
-            <td>{{ d.grupo_detraccion }}</td>
-            <td>{{ d.solo_impuesto }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+      <!-- Tabla de detalles -->
+      <h6 class="mt-4 mb-2">Detalle</h6>
+        <div class="pt-0">
+          <table id="tabla-documentos-visualizacion" class="table table-striped table-sm table-bordered w-100">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Moneda</th>
+                <th>Unidad</th>
+                <th>Precio</th>
+                <th>Descuento</th>
+                <th>Total</th>
+                <th>Impuesto</th>
+                <th>Afectación IGV</th>
+                <th>Cuenta Mayor</th>
+                <th>CC1</th>
+                <th>CC2</th>
+                <th>CC3</th>
+                <th>Grupo Detracción</th>
+                <th>Solo Impuesto</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for d in detalles %}
+                <tr>
+                  <td>{{ d.numero_linea }}</td>
+                  <td>{{ d.codigo_articulo }}</td>
+                  <td>{{ d.descripcion }}</td>
+                  <td>{{ d.cantidad }}</td>
+                  <td>{{ d.moneda }}</td>
+                  <td>{{ d.articulo_unidad }}</td>
+                  <td>{{ d.precio_unidad }}</td>
+                  <td>{{ d.descuento }}</td>
+                  <td>{{ d.total_moneda_extranjera }}</td>
+                  <td>{{ d.impuesto }}</td>
+                  <td>{{ d.tipo_afectacion_igv }}</td>
+                  <td>{{ d.cuenta_mayor }}</td>
+                  <td>{{ d.cc1_general }}</td>
+                  <td>{{ d.cc2_unidades_negocio }}</td>
+                  <td>{{ d.cc3_local }}</td>
+                  <td>{{ d.grupo_detraccion }}</td>
+                  <td>{{ d.solo_impuesto }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+    </div>
+
+    <!-- Columna derecha: Campos de usuario -->
+    <div class="col-12 col-lg-3">
+      <div class="card mb-2 shadow-sm border-0">
+        <div class="card-body py-2 px-3" style="max-height: 750px; overflow-y: auto;">
+          <h6 class="fw-semibold mb-3">Datos de usuario</h6>
+          <div class="mb-2">
+            <label class="form-label">Condición de pago</label>
+            <input type="text" class="form-control" value="{{ form.instance.condicion_pago.descripcion }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Cuenta asociada</label>
+            <input type="text" class="form-control" value="{{ form.instance.cuenta_asociada.descripcion }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Empleado ventas</label>
+            <input type="text" class="form-control" value="{{ form.instance.empleado_ventas.nombres_apellidos }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Propietario</label>
+            <input type="text" class="form-control" value="{{ form.instance.propietario.nombres_apellidos }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Descuento global</label>
+            <input type="text" class="form-control" value="{{ form.instance.descuento_global }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Tipo de operación</label>
+            <input type="text" class="form-control" value="{{ form.instance.tipo_operacion }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Tipo de base imponible</label>
+            <input type="text" class="form-control" value="{{ form.instance.tipo_base_imponible }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Aplica detracción</label>
+            <input type="text" class="form-control" value="{{ form.instance.aplica_detraccion }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Aplica auto detracción</label>
+            <input type="text" class="form-control" value="{{ form.instance.aplica_auto_detraccion }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Concepto de detracción</label>
+            <input type="text" class="form-control" value="{{ form.instance.concepto_detraccion }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Tipo de base imponible</label>
+            <input type="text" class="form-control" value="{{ form.instance.tipo_base_imponible }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Porcentaje detracción</label>
+            <input type="text" class="form-control" value="{{ form.instance.porcentaje_detraccion }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Base imponible</label>
+            <input type="text" class="form-control" value="{{ form.instance.base_imponible }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Impuesto</label>
+            <input type="text" class="form-control" value="{{ form.instance.impuesto }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Total IGV</label>
+            <input type="text" class="form-control" value="{{ form.instance.total_igv }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Monto detracción</label>
+            <input type="text" class="form-control" value="{{ form.instance.monto_detraccion }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Operacion detracción</label>
+            <input type="text" class="form-control" value="{{ form.instance.operacion_detraccion }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Estado FE</label>
+            <input type="text" class="form-control" value="{{ form.instance.estado_fe }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Tipo de operación FE</label>
+            <input type="text" class="form-control" value="{{ form.instance.tipo_operacion_fe }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Comentarios</label>
+            <input type="text" class="form-control" value="{{ form.instance.comentarios }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Estado de migración</label>
+            <input type="text" class="form-control" value="{{ form.instance.estado_migracion }}" disabled>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Descripcion de migración</label>
+            <input type="text" class="form-control" value="{{ form.instance.descripcion_migracion }}" disabled>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </form>
 
 <script src="/static/js/documentos/accion_visualizacion/datatables-documentos-visualizacion.js"></script>
-
-
-  {% comment %} <script src="{% static 'js/documentos/accion_visualizacion/datatables-documentos-visualizacion.js' %}"></script> {% endcomment %}

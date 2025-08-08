@@ -255,7 +255,7 @@
                     <g id="path-1"></g>
                     <g id="Group" mask="url(#mask-28)">
                         <g transform="translate(-6.666667, 0.000000)" id="BR">
-                            <g id="drop-shadow" fill="#000000" fill-rule="nonzero">
+                            <g id="drop-shadow" fill="#34363a" fill-rule="nonzero">
                                 <rect id="path-7" x="0" y="0" width="53.3333333" height="40" rx="2"></rect>
                             </g>
                             <g id="Group-Clipped">
@@ -281,7 +281,7 @@
                                                 <g id="flag-contents" mask="url(#mask-34)">
                                                     <g transform="translate(5.000000, 5.000000)">
                                                         <g id="yellow-diamond">
-                                                            <g id="path-15-link" fill="#000000" fill-rule="nonzero">
+                                                            <g id="path-15-link" fill="#34363a" fill-rule="nonzero">
                                                                 <polygon id="path-15" points="21.54464 1.1734 41.8810667 15.34584 21.268 28.6188 1.34821333 15.07112"></polygon>
                                                             </g>
                                                             <g id="path-15-link" fill="#FFD221">
@@ -376,7 +376,7 @@
                                     <use xlink:href="#path-56"></use>
                                 </mask>
                                 <g id="path-7"></g>
-                                <g id="overlay" mask="url(#mask-57)" stroke="#000000" stroke-opacity="0.1">
+                                <g id="overlay" mask="url(#mask-57)" stroke="#34363a" stroke-opacity="0.1">
                                     <g transform="translate(0.818182, 0.818182)" id="Rectangle">
                                         <rect x="0.0151515152" y="0.0151515152" width="51.6666667" height="38.3333333" rx="2"></rect>
                                     </g>

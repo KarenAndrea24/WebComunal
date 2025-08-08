@@ -243,7 +243,7 @@
                     <g id="path-1"></g>
                     <g id="Group" mask="url(#mask-28)">
                         <g transform="translate(-6.666667, 0.000000)" id="IN">
-                            <g id="drop-shadow" fill="#000000" fill-rule="nonzero">
+                            <g id="drop-shadow" fill="#34363a" fill-rule="nonzero">
                                 <rect id="path-7" x="0" y="0" width="53.3333333" height="40" rx="2"></rect>
                             </g>
                             <g id="Group-Clipped">
@@ -300,7 +300,7 @@
                                     <g id="path-15-link" style="mix-blend-mode: overlay;">
                                         <rect id="path-15" x="0" y="0" width="53.3333333" height="40" rx="2"></rect>
                                     </g>
-                                    <rect id="Rectangle" stroke-opacity="0.1" stroke="#000000" x="0.833333333" y="0.833333333" width="51.6666667" height="38.3333333" rx="2"></rect>
+                                    <rect id="Rectangle" stroke-opacity="0.1" stroke="#34363a" x="0.833333333" y="0.833333333" width="51.6666667" height="38.3333333" rx="2"></rect>
                                 </g>
                             </g>
                         </g>

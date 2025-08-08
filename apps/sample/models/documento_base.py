@@ -13,16 +13,21 @@ class DocumentoBase(models.Model):
     razon_social = models.CharField(max_length=100)
     moneda = models.CharField(max_length=10)
     serie = models.CharField(max_length=10)
-    condicion_pago = models.IntegerField(null=True, blank=True)
-    cuenta_asociada = models.CharField(max_length=15) # ver si todos son numero para colcoarle integer
+    # condicion_pago = models.IntegerField(null=True, blank=True)
+    condicion_pago = models.ForeignKey('CondicionPago', on_delete=models.PROTECT, null=True, blank=True)
+    # cuenta_asociada = models.CharField(max_length=15) # ver si todos son numero para colcoarle integer
+    cuenta_asociada = models.ForeignKey('CuentaContable', on_delete=models.PROTECT, null=True, blank=True)
     referencia = models.CharField(max_length=100, null=True, blank=True)
     fecha_contabilizacion = models.DateField()
     fecha_vencimiento = models.DateField()
     fecha_documento = models.DateField()
     tipo_documento = models.CharField(max_length=2)
+    # tipo_documento = models.ForeignKey('TipoDocumento', on_delete=models.PROTECT)
     correlativo = models.IntegerField(null=True, blank=True)
-    empleado_ventas = models.CharField(max_length=100)
-    propietario = models.CharField(max_length=100) # SON IDS QUIZAS DEBERIAN DE SER INTEGER NO CHARFIELD
+    # empleado_ventas = models.CharField(max_length=100)
+    empleado_ventas = models.ForeignKey('Empleado', on_delete=models.PROTECT, null=True, blank=True)
+    # propietario = models.CharField(max_length=100) # SON IDS QUIZAS DEBERIAN DE SER INTEGER NO CHARFIELD
+    propietario = models.ForeignKey('Propietario', on_delete=models.PROTECT, null=True, blank=True)
     descuento_global = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     tipo_operacion = models.CharField(max_length=50) #aqui se debe de guardar el id no mas osea 01 o debe de guardarse todo el texto tambien? AQUI ES SOLO 2 EN LENGHT
     tipo_base_imponible = models.CharField(max_length=50, null=True, blank=True) #aqui se debe de guardar el id no mas osea 01 o debe de guardarse todo el texto tambien? AQUI ES SOLO 2 EN LENGHT

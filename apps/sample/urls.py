@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CargaMasivaPreviewView, RegistrarDocumentosView, SampleView, boletas_json, documento_detalle, facturas_json, notas_credito_json, notas_debito_json
+from .views import CargaMasivaPreviewView, DocumentoDeleteView, RegistrarDocumentosView, SampleView, boletas_json, documento_detalle, facturas_json, notas_credito_json, notas_debito_json
 
 
 urlpatterns = [
@@ -63,5 +63,6 @@ urlpatterns = [
     path('documentos/<int:pk>/', documento_detalle, name='doc-detalle'),
     # path('documentos/<int:pk>/editar/', DocumentoUpdateView.as_view(), name='doc-editar'),
     # path('documentos/<int:pk>/', DocumentoDeleteView.as_view(), name='doc-borrar'),  # DELETE via AJAX
+    path("documentos/<int:pk>/", DocumentoDeleteView.as_view(), name="documento_delete"),
 
 ]

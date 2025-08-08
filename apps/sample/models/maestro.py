@@ -1,6 +1,30 @@
 from django.db import models
 
 
+class CondicionPago(models.Model):
+    codigo_condicion_pago = models.CharField(max_length=20, unique=True)
+    descripcion = models.CharField(max_length=255) 
+
+class TipoDocumento(models.Model):
+    codigo_tipo_documento = models.CharField(max_length=2, unique=True)
+    descripcion = models.CharField(max_length=50)
+
+class Empleado(models.Model):
+    codigo_empleado = models.CharField(max_length=20, unique=True)
+    dni = models.CharField(max_length=8, unique=True)
+    nombres_apellidos = models.CharField(max_length=255)
+
+class Propietario(models.Model):
+    codigo_propietario = models.CharField(max_length=20, unique=True)
+    dni = models.CharField(max_length=8, unique=True)
+    nombres_apellidos = models.CharField(max_length=255)
+
+class CuentaContable(models.Model):
+    codigo_cuenta_contable = models.CharField(max_length=20, unique=True)
+    descripcion = models.CharField(max_length=255)
+
+# ------------------------------------------------------------------------------
+
 class Departamento(models.Model):
     codigo_departamento = models.CharField(max_length=4, unique=True)
     descripcion = models.CharField(max_length=100)
@@ -10,29 +34,9 @@ class Moneda(models.Model):
     descripcion = models.CharField(max_length=50)
     xodigo_sunat = models.CharField(max_length=20, unique=True)
 
-class CondicionPago(models.Model):
-    codigo_condicion_pago = models.CharField(max_length=20, unique=True)
-    descripcion = models.CharField(max_length=255) 
-
-class TipoDocumento(models.Model):
-    codigo_tipo_documento = models.CharField(max_length=2, unique=True)
-    descripcion = models.CharField(max_length=50)
-
 class Series(models.Model):
     codigo_serie = models.IntegerField()
     descripcion = models.CharField(max_length=50)
-
-class Empleado(models.Model):
-    codigo_empleado = models.CharField(max_length=12, unique=True)
-    dni = models.CharField(max_length=8, unique=True)
-    nombres = models.CharField(max_length=255)
-    apellidos = models.CharField(max_length=255)
-
-class Propietario(models.Model):
-    codigo_propietario = models.CharField(max_length=12, unique=True)
-    dni = models.CharField(max_length=8, unique=True)
-    nombres = models.CharField(max_length=255)
-    apellidos = models.CharField(max_length=255)
 
 class TipoOperacion(models.Model):
     codigo_tipo_operacion = models.CharField(max_length=2, unique=True)
@@ -49,10 +53,6 @@ class OperacionDetraccion(models.Model):
 class TipoOperacionFE(models.Model):
     codigo_tipo_operacion_fe = models.CharField(max_length=2, unique=True)
     descripcion = models.CharField(max_length=50)
-
-class Cuentacontable(models.Model):
-    codigo_cuenta_contable = models.CharField(max_length=20, unique=True)
-    descripcion = models.CharField(max_length=255)
 
 class Dimension(models.Model):
     codigo_dimension = models.CharField(max_length=20, unique=True)
@@ -79,4 +79,3 @@ class Impuesto(models.Model):
 class TipoAfectacionIGV(models.Model):
     codigo_tipo_afectacion = models.CharField(max_length=2, unique=True)
     descripcion = models.CharField(max_length=50)
-

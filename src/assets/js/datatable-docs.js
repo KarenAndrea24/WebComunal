@@ -170,10 +170,10 @@ function getColumnDefs () {
         // <a class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit"><i class="ti ti-pencil ti-md"></i></a>
         `
         <div class="btn-group" role="group">
-          <button class="btn btn-sm btn-primary btn-icon btn-view  me-2" data-id="${full.id}" title="Visualizar">
+          <button class="btn btn-sm btn-primary btn-icon btn-view  me-2" data-id="${full.id}" data-tipo="${full.tipo_documento}" title="Visualizar">
             <i class="ti ti-eye"></i>
           </button>
-          <button class="btn btn-sm btn-danger  btn-icon btn-delete" data-id="${full.id}" title="Borrar">
+          <button class="btn btn-sm btn-danger  btn-icon btn-delete" data-id="${full.id}" data-tipo="${full.tipo_documento}" title="Borrar">
             <i class="ti ti-trash"></i>
           </button>
         </div>
@@ -237,3 +237,29 @@ function responsiveCfg () {
     }
   };
 }
+
+$tabla.on('click', '.btn-delete', function () {
+  const id   = $(this).data('id');
+  const tipo = $(this).data('tipo'); // "01"|"03"|"07"|"08"
+  if (!confirm('¿Seguro que deseas borrar este documento?')) return;
+
+  $.ajax({
+    url: `/documentos/${id}/?tipo=${tipo}`,
+    type: 'DELETE',
+    headers: { 'X-CSRFToken': csrfToken }, // asegúrate de tener csrfToken
+    success: () => {
+      dt.row($(this).parents('tr')).remove().draw(false);
+    },
+    error: (xhr) => {
+      const msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'No se pudo borrar';
+      alert(msg);
+    }
+  });
+});
+
+function getCookie (name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+const csrfToken = getCookie('csrftoken');

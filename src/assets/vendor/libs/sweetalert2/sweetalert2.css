@@ -1200,7 +1200,7 @@ body.swal2-toast-shown .swal2-container.swal2-bottom-end, body.swal2-toast-shown
 }
 .light-style .swal2-popup .swal2-icon.swal2-question {
   border-color: rgba(128, 131, 144, 0.4);
-  color: #808390;
+  color: #34363a;
 }
 .light-style .swal2-popup .swal2-icon.swal2-info {
   border-color: rgba(0, 186, 209, 0.4);
@@ -1278,7 +1278,7 @@ body.swal2-toast-shown .swal2-container.swal2-bottom-end, body.swal2-toast-shown
 }
 .dark-style .swal2-popup .swal2-icon.swal2-question {
   border-color: rgba(128, 131, 144, 0.4);
-  color: #808390;
+  color: #34363a;
 }
 .dark-style .swal2-popup .swal2-icon.swal2-info {
   border-color: rgba(0, 186, 209, 0.4);

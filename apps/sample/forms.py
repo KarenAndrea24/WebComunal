@@ -14,9 +14,6 @@ class FacturaForm(forms.ModelForm):
         exclude = ("serie_documento","estado_fe")           # ejemplo
         widgets = {
             # date-pickers / selects bonitos
-            # "fecha_contabilizacion": forms.DateInput(attrs={"type": "date"}),
-            # "fecha_vencimiento"   : forms.DateInput(attrs={"type": "date"}),
-            # "fecha_documento"     : forms.DateInput(attrs={"type": "date"}),
             "fecha_contabilizacion": forms.DateInput(attrs={"type": "date", "class": "form-control form-control-plaintext", "readonly": True}),
             "fecha_vencimiento"   : forms.DateInput(attrs={"type": "date", "class": "form-control form-control-plaintext", "readonly": True}),
             "fecha_documento"     : forms.DateInput(attrs={"type": "date", "class": "form-control form-control-plaintext", "readonly": True}),
@@ -25,8 +22,7 @@ class FacturaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for f in self.fields.values():
             f.widget.attrs.update({
-                "class": "form-control form-control-plaintext mb-1",
-                "readonly": True,
+                "class": "form-control mb-1",
                 "disabled": True,       # evita tab-focus
             })
 

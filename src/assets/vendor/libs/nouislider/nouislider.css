@@ -641,10 +641,10 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
   background: rgba(128, 131, 144, 0.16);
 }
 .light-style .noUi-secondary.noUi-target:not([disabled]) .noUi-connect {
-  background: #808390;
+  background: #34363a;
 }
 .light-style .noUi-secondary.noUi-target:not([disabled]) .noUi-handle {
-  border-color: #808390;
+  border-color: #34363a;
 }
 .light-style .noUi-secondary.noUi-target:not([disabled]) .noUi-handle:hover {
   box-shadow: 0 0 0 8px rgba(128, 131, 144, 0.16);
@@ -787,10 +787,10 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
   background: rgba(128, 131, 144, 0.16);
 }
 .dark-style .noUi-secondary.noUi-target:not([disabled]) .noUi-connect {
-  background: #808390;
+  background: #34363a;
 }
 .dark-style .noUi-secondary.noUi-target:not([disabled]) .noUi-handle {
-  border-color: #808390;
+  border-color: #34363a;
 }
 .dark-style .noUi-secondary.noUi-target:not([disabled]) .noUi-handle:hover {
   box-shadow: 0 0 0 8px rgba(128, 131, 144, 0.16);

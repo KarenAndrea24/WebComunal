@@ -127,3 +127,11 @@
   text-align: center;
   margin-top: 1rem;
 }
+
+/*
+* Modals
+******************************************************************************/
+.modal-fullscreen-custom {
+  max-width: 80% !important;
+  width: 80% !important;
+}

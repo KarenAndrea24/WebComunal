@@ -27,8 +27,8 @@
         </div>
       </div>
       <div class="mt-4">
-        <button type="button" class="btn btn-primary" id="btn-preview">Cargar archivos</button>
-        <button type="button" class="btn btn-success" id="btn-register" disabled>Registrar documentos</button>
+        <button type="button" class="btn btn-secondary" id="btn-preview">Cargar archivos</button>
+        <button type="button" class="btn btn-primary" id="btn-register" disabled>Registrar documentos</button>
       </div>
     </form>
   </div>
@@ -97,7 +97,7 @@ function renderTable(tableId, data) {
     data: data,
     columns: columns,
     responsive: false,
-    scrollX: true,
+    scrollX: false,
     autoWidth: false,
     pageLength: 5,
     lengthChange: true,
@@ -161,7 +161,7 @@ document.getElementById("btn-register").addEventListener("click", function() {
     Swal.fire({
       icon: 'warning',
       title: 'No hay datos para registrar',
-      text: 'Por favor, primero carga los archivos.'
+      text: 'Por favor, primero carga los archivos'
     });
     return;
   }
@@ -191,7 +191,28 @@ document.getElementById("btn-register").addEventListener("click", function() {
           text: data.message || 'Se guardaron correctamente',
           timer: 3000,
           showConfirmButton: false
-        });
+        }); 
+      } else if (status === 400 && data.errores && Array.isArray(data.errores)) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Errores en la carga masiva',
+            html: `
+              <div style="text-align:left;max-height:350px;overflow:auto">
+                <ul style="margin: 0 0 0 18px; padding: 0;">
+                  ${data.errores.map(e => `<li style="margin-bottom:8px;font-size:16px;">${e}</li>`).join('')}
+                </ul>
+                <p style="margin-top: 16px; font-size: 15px; color: #787878;">
+                  Por favor, revisa y corrige los datos en tu archivo Excel antes de volver a intentar.
+                </p>
+              </div>
+            `,
+            confirmButtonText: 'Entendido',
+            width: 520,
+            customClass: {
+              title: 'fw-bold',
+              confirmButton: 'btn btn-primary'
+            }
+          });
       } else {
         throw new Error(data.message || "Error inesperado");
       }

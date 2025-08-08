@@ -13,6 +13,7 @@ from apps.sample.forms import DetalleDocumentoFormSet, FacturaForm
 from apps.sample.models.cuota import Cuota
 from apps.sample.models.detalle import DetalleDocumento
 from apps.sample.models.documento_base import Boleta, Factura, NotaCredito, NotaDebito
+from apps.sample.models.maestro import CondicionPago, CuentaContable, Empleado, Propietario
 from web_project import TemplateLayout
 from django.contrib.contenttypes.models import ContentType
 from django.utils.dateparse import parse_date
@@ -142,8 +143,10 @@ class RegistrarDocumentosView(View):
             for q in cuotas_raw:
                 cuotas[str(q.get("ID_DOCUMENTO"))].append(q)
 
+            errores = []
+
             with transaction.atomic():
-                for cab in cabeceras:
+                for i, cab in enumerate(cabeceras):
                     tipo_doc = str(cab.get("TIPO_DOCUMENTO", "")).zfill(2)
                     id_doc = str(cab.get("ID_DOCUMENTO", "")).strip()
 
@@ -155,8 +158,58 @@ class RegistrarDocumentosView(View):
                     }.get(tipo_doc)
 
                     if not modelo:
+                        errores.append(f"[Fila {i+2}] Tipo documento '{tipo_doc}' inválido")
                         continue
 
+                    fk_error = False
+
+                    # condicion de pago
+                    condicion_pago_val = cab.get("CONDICION_DE_PAGO")
+                    condicion_pago_obj = None
+                    if condicion_pago_val:
+                        try:
+                            condicion_pago_obj = CondicionPago.objects.get(codigo_condicion_pago=condicion_pago_val)
+                        except CondicionPago.DoesNotExist:
+                            errores.append(f"[Fila {i+2}] condición de pago '{condicion_pago_val}' no existe")
+                            logger.warning(f"[Carga masiva] condición de pago '{condicion_pago_val}' no existe en fila {i+2} del excel")
+                            fk_error = True
+
+                    # propietario
+                    propietario_val = cab.get("PROPIETARIO")
+                    propietario_obj = None
+                    if propietario_val:
+                        try:
+                            propietario_obj = Propietario.objects.get(codigo_propietario=propietario_val)
+                        except Propietario.DoesNotExist:
+                            errores.append(f"[Fila {i+2}] Propietario '{propietario_val}' no existe")
+                            logger.warning(f"[Carga masiva] Propietario '{propietario_val}' no existe en fila {i+2} del excel")
+                            fk_error = True
+
+                    # empleado ventas
+                    empleado_val = cab.get("EMPLEADO_VENTAS")
+                    empleado_obj = None
+                    if empleado_val:
+                        try:
+                            empleado_obj = Empleado.objects.get(codigo_empleado=empleado_val)
+                        except Empleado.DoesNotExist:
+                            errores.append(f"[Fila {i+2}] Empleado ventas '{empleado_val}' no existe")
+                            logger.warning(f"[Carga masiva] Empleado ventas '{empleado_val}' no existe en fila {i+2} del excel")
+                            fk_error = True
+                    
+                    # cuenta contable
+                    cuenta_val = cab.get("CUENTA_ASOCIADA")
+                    cuenta_obj = None
+                    if cuenta_val:
+                        try:
+                            cuenta_obj = CuentaContable.objects.get(codigo_cuenta_contable=cuenta_val)
+                        except CuentaContable.DoesNotExist:
+                            errores.append(f"[Fila {i+2}] Cuenta contable '{cuenta_val}' no existe.")
+                            logger.warning(f"[Carga masiva] Cuenta contable '{cuenta_val}' no existe en fila {i+2} del Excel.")
+                            fk_error = True
+
+                    if fk_error:
+                        continue
+                    
                     def parse_str(val):
                         return str(val).strip() if val else ""
 
@@ -195,16 +248,20 @@ class RegistrarDocumentosView(View):
                         razon_social=cab.get("RAZON_SOCIAL"),
                         moneda=cab.get("MONEDA"),
                         serie=cab.get("SERIE"),
-                        condicion_pago=parse_int(cab.get("CONDICION_DE_PAGO")),
-                        cuenta_asociada=cab.get("CUENTA_ASOCIADA"),
+                        # condicion_pago=parse_int(cab.get("CONDICION_DE_PAGO")),
+                        condicion_pago=condicion_pago_obj,
+                        # cuenta_asociada=cab.get("CUENTA_ASOCIADA"),
+                        cuenta_asociada=cuenta_obj,
                         referencia=cab.get("REFERENCIA"),
                         fecha_contabilizacion=parse_f(cab.get("FECHA_CONTABILIZACION")),
                         fecha_vencimiento=parse_f(cab.get("FECHA_VENCIMIENTO")),
                         fecha_documento=parse_f(cab.get("FECHA_DOCUMENTO")),
                         tipo_documento=tipo_doc,
                         correlativo=parse_int(cab.get("CORRELATIVO")),
-                        empleado_ventas=cab.get("EMPLEADO_VENTAS"),
-                        propietario=cab.get("PROPIETARIO"),
+                        # empleado_ventas=cab.get("EMPLEADO_VENTAS"),
+                        empleado_ventas=empleado_obj,
+                        # propietario=cab.get("PROPIETARIO"),
+                        propietario=propietario_obj,
                         descuento_global=parse_decimal(cab.get("DESCUENTO_GLOBAL", 0.00)),
                         tipo_operacion=cab.get("TIPO_DE_OPERACION"),
                         tipo_base_imponible=cab.get("TIPO_DE_BASE_IMPONIBLE"),
@@ -284,11 +341,14 @@ class RegistrarDocumentosView(View):
                                 total=parse_decimal(cuota.get("TOTAL"))
                             )
 
+            if errores:
+                return JsonResponse({"message": "Errores encontrados en la carga masiva", "errores": errores}, status=400)
+
             return JsonResponse({"message": "Documentos registrados exitosamente"}, status=201)
 
-        except Exception:
+        except Exception as e:
             logger.exception("Error al guardar documentos")
-            return JsonResponse({"message": "Error al guardar documentos"}, status=400)
+            return JsonResponse({"message": f"Error al guardar documentos: {str(e)}"}, status=400)
 
 
 def facturas_json(request):
@@ -382,24 +442,86 @@ def documento_detalle(request, pk):
         'detalles': detalles
     })
 
-def documento_editar(request, pk):
-    factura = get_object_or_404(Factura, pk=pk)
+# def documento_editar(request, pk):
+#     factura = get_object_or_404(Factura, pk=pk)
 
-    if request.method == "POST":
-        form      = FacturaForm(request.POST, instance=factura)
-        formset   = DetalleDocumentoFormSet(
-            request.POST,
-            instance=factura,
-            queryset=factura.detalledocumento_set.all()
-        )
-        if form.is_valid() and formset.is_valid():
-            form.save()
-            # formset.save() rellenará automáticamente content_type y object_id
-            formset.save()
-            ...
-    else:
-        form    = FacturaForm(instance=factura)
-        formset = DetalleDocumentoFormSet(instance=factura)
+#     if request.method == "POST":
+#         form      = FacturaForm(request.POST, instance=factura)
+#         formset   = DetalleDocumentoFormSet(
+#             request.POST,
+#             instance=factura,
+#             queryset=factura.detalledocumento_set.all()
+#         )
+#         if form.is_valid() and formset.is_valid():
+#             form.save()
+#             # formset.save() rellenará automáticamente content_type y object_id
+#             formset.save()
+#             ...
+#     else:
+#         form    = FacturaForm(instance=factura)
+#         formset = DetalleDocumentoFormSet(instance=factura)
 
-    return render(request, "documentos/editar.html",
-                  {"form": form, "formset": formset})
+#     return render(request, "documentos/editar.html",
+#                   {"form": form, "formset": formset})
+
+
+class DocumentoDeleteView(View):
+    """
+    Borra un documento por ID y su tipo (01 factura, 03 boleta, 07 NC, 08 ND).
+    También elimina DetalleDocumento y Cuota vinculados por content_type/object_id.
+    Soporta:
+      - DELETE /documentos/<id>/?tipo=01
+    Si no se envía 'tipo', intenta localizar de forma única entre los 4 modelos.
+    """
+
+    MODEL_MAP = {
+        "01": Factura,
+        "03": Boleta,
+        "07": NotaCredito,
+        "08": NotaDebito,
+    }
+
+    def delete(self, request, pk):
+        tipo = (request.GET.get("tipo") or "").strip()
+
+        try:
+            with transaction.atomic():
+                if tipo:
+                    model = self.MODEL_MAP.get(tipo)
+                    if not model:
+                        return JsonResponse({"message": "Tipo de documento inválido."}, status=400)
+
+                    obj = get_object_or_404(model, pk=pk)
+                    ct = ContentType.objects.get_for_model(model)
+
+                    DetalleDocumento.objects.filter(content_type=ct, object_id=obj.id).delete()
+                    Cuota.objects.filter(content_type=ct, object_id=obj.id).delete()
+                    obj.delete()
+                    return JsonResponse({"message": "Eliminado correctamente."}, status=200)
+
+                # Sin tipo: buscar de forma única (riesgo de colisiones si IDs coinciden)
+                encontrados = []
+                for m in self.MODEL_MAP.values():
+                    if m.objects.filter(pk=pk).exists():
+                        encontrados.append(m)
+
+                if not encontrados:
+                    return JsonResponse({"message": "No existe el documento."}, status=404)
+                if len(encontrados) > 1:
+                    return JsonResponse(
+                        {"message": "Conflicto: el ID existe en más de un tipo. Envía ?tipo=01|03|07|08."},
+                        status=409
+                    )
+
+                model = encontrados[0]
+                obj = get_object_or_404(model, pk=pk)
+                ct = ContentType.objects.get_for_model(model)
+
+                DetalleDocumento.objects.filter(content_type=ct, object_id=obj.id).delete()
+                Cuota.objects.filter(content_type=ct, object_id=obj.id).delete()
+                obj.delete()
+                return JsonResponse({"message": "Eliminado correctamente."}, status=200)
+
+        except Exception:
+            logger.exception("Error al eliminar documento")
+            return JsonResponse({"message": "Error interno al eliminar."}, status=500)
